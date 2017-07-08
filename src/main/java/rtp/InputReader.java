@@ -115,8 +115,7 @@ public class InputReader {
             String header = in.readLine();
             String className = ClassNames.ENTITIES_PATH + entityName;
             while((line = in.readLine()) != null) {
-                Class<?> cl = Class.forName(className);
-                Constructor<?> ctor = cl.getConstructor(String.class);
+                Constructor ctor = Class.forName(className).getConstructor(String.class, String.class);
                 Object object = ctor.newInstance(line,header);
                 entitiesArray.add(object);
             }

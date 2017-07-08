@@ -16,8 +16,8 @@ public class Linia extends RTPentity {
     public String linia_nom_curt;
     public String operador_id;
 
-    public Linia(String val) throws IOException{
-        super(val, header);
+    public Linia(String val, String h) throws IOException{
+        super(val, h);
         this.setValues();
         this.validate();
     }
