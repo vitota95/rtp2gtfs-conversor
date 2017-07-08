@@ -14,11 +14,10 @@ import java.util.logging.Logger;
 public class Versio extends RTPentity {
 
     private static final Logger LOGGER = Logger.getLogger( Versio.class.getName() );
-    String data;
+    private String data;
 
-    public Versio(String val) throws IOException{
-        super(val);
-        this.header = CSVHeaders.CLASS_VERSIO;
+    public Versio(String val, String h) throws IOException{
+        super(val, h);
         this.setValues();
         this.validate();
     }
@@ -40,7 +39,7 @@ public class Versio extends RTPentity {
     @Override
     void setValues() throws IOException{
         String[] vals = this.valuesString.split(csvSeparator);
-        String[] heads = this.header.split(csvSeparator);
+        String[] heads = header.split(csvSeparator);
 
         if(vals.length != heads.length){
             LOGGER.log(Level.SEVERE, "Values and header don't match");

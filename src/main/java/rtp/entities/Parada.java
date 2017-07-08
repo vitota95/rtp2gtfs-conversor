@@ -7,13 +7,14 @@ import java.io.IOException;
  */
 public class Parada extends RTPentity {
 
+
     @Override
     void setValues() throws IOException {
 
     }
 
-    public Parada(String val){
-        super(val);
+    public Parada(String val, String h){
+        super(val, h);
     }
 
     @Override

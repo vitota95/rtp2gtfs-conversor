@@ -4,17 +4,17 @@ package main.java.rtp;
  * Created by javig on 07/07/2017.
  */
 public class RTPHeaders {
-    String versio;
-    String operador;
-    String parada;
-    String linia;
-    String expedicio;
-    String restriccio;
-    String periode;
-    String itinerari;
-    String vehicle;
-    String temps_itinerari;
-    String trajecte;
+    static String versio;
+    static String operador;
+    static String parada;
+    static String linia;
+    static String expedicio;
+    static String restriccio;
+    static String periode;
+    static String itinerari;
+    static String vehicle;
+    static String temps_itinerari;
+    static String trajecte;
 
     public String getVersio() {
         return versio;

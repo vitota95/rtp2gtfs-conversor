@@ -12,12 +12,11 @@ import java.util.logging.Logger;
  */
 public class Operador extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Operador.class.getName() );
-    String operador_id;
-    String operador_nom_complet;
+    private String operador_id;
+    private String operador_nom_complet;
 
-    public Operador(String values) throws IOException{
-        super(values);
-        this.header = CSVHeaders.CLASS_OPERADOR;
+    public Operador(String values, String h) throws IOException{
+        super(values,h);
         this.setValues();
         this.validate();
     }

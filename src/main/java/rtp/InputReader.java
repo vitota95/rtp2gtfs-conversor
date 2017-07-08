@@ -1,5 +1,8 @@
 package main.java.rtp;
 
+import main.java.rtp.entities.Expedicio;
+import main.java.rtp.entities.RTPentity;
+
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -109,31 +112,18 @@ public class InputReader {
         String line;
 
         try{
-            //Discard headers
             String header = in.readLine();
+            String className = ClassNames.ENTITIES_PATH + entityName;
             while((line = in.readLine()) != null) {
-                String className = "main.java.rtp.entities." + entityName;
                 Class<?> cl = Class.forName(className);
                 Constructor<?> ctor = cl.getConstructor(String.class);
-                Object object = ctor.newInstance(new Object[] { line });
+                Object object = ctor.newInstance(line,header);
                 entitiesArray.add(object);
             }
 
             entities.put(entityName, entitiesArray);
         }
-        catch (ClassNotFoundException e){
-            LOGGER.log(Level.WARNING, e.toString(), e);
-        }
-        catch (InstantiationException e){
-            LOGGER.log(Level.WARNING, e.toString(), e);
-        }
-        catch (IllegalAccessException e){
-            LOGGER.log(Level.WARNING, e.toString(), e);
-        } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.WARNING, e.toString(), e);
-        } catch (InvocationTargetException e) {
-            LOGGER.log(Level.WARNING, e.toString(), e);
-        } catch (IOException e) {
+        catch (ClassNotFoundException | InstantiationException | NoSuchMethodException | IllegalAccessException | IOException | InvocationTargetException e){
             LOGGER.log(Level.WARNING, e.toString(), e);
         }
     }

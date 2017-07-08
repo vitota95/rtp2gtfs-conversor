@@ -12,8 +12,8 @@ public class Trajecte extends RTPentity {
 
     }
 
-    public Trajecte(String val){
-        super(val);
+    public Trajecte(String val, String h){
+        super(val, h);
     }
 
     @Override

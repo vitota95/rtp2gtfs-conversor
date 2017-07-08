@@ -7,13 +7,14 @@ import java.io.IOException;
  */
 public class Restriccio extends RTPentity {
 
+
     @Override
     void setValues() throws IOException {
 
     }
 
-    public Restriccio(String val){
-        super(val);
+    public Restriccio(String val, String h){
+        super(val, h);
     }
 
     @Override

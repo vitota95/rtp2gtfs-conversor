@@ -11,13 +11,13 @@ import java.util.logging.Logger;
 public class Linia extends RTPentity {
 
     private static final Logger LOGGER = Logger.getLogger( Linia.class.getName() );
-    String linia_id;
-    String linia_nom_curt;
-    String operador_id;
+
+    public String linia_id;
+    public String linia_nom_curt;
+    public String operador_id;
 
     public Linia(String val) throws IOException{
-        super(val);
-        this.header = CSVHeaders.CLASS_LINIA;
+        super(val, header);
         this.setValues();
         this.validate();
     }

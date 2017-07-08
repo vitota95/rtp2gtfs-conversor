@@ -9,16 +9,19 @@ import java.util.Map;
  */
 public abstract class RTPentity {
     String valuesString;
-    String header;
     Map values;
     static String csvSeparator = ";";
+    static String header = null;
 
-    public RTPentity(String v){
+    public RTPentity(String v, String h){
         this.valuesString = v;
+        if (header == null) {
+            header = h;
+        }
     }
 
     public static boolean checkEmpty(String s){
-        return (s == null && s.isEmpty()) ? true : false;
+        return (s == null && s.isEmpty());
     }
 
     abstract void validate() throws IOException;

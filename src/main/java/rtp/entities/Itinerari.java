@@ -7,8 +7,8 @@ import java.io.IOException;
  */
 public class Itinerari extends RTPentity {
 
-    public Itinerari(String val){
-        super(val);
+    public Itinerari(String val, String h){
+        super(val, h);
     }
 
     @Override

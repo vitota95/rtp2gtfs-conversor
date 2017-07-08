@@ -6,6 +6,7 @@ import java.util.ArrayList;
  * Created by javig on 03/07/2017.
  */
 public interface ClassNames {
+    String ENTITIES_PATH = "main.java.rtp.entities.";
     String CLASS_VERSIO = "Versio";
     String CLASS_OPERADOR = "Operador";
     String CLASS_PARADA = "Parada";

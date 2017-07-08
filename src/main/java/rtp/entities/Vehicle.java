@@ -7,13 +7,18 @@ import java.io.IOException;
  */
 public class Vehicle extends RTPentity {
 
+    private String header;
+    public void setHeader(String h){
+        header = h;
+    }
+
     @Override
     void setValues() throws IOException {
 
     }
 
-    public Vehicle(String val){
-        super(val);
+    public Vehicle(String val, String h){
+        super(val, h);
     }
 
     @Override

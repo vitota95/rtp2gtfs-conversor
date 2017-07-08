@@ -12,8 +12,8 @@ public class Periode extends RTPentity {
 
     }
 
-    public Periode(String val){
-        super(val);
+    public Periode(String val, String h){
+        super(val, h);
     }
 
     @Override

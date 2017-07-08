@@ -12,8 +12,8 @@ public class TempsItinerari extends RTPentity {
 
     }
 
-    public TempsItinerari(String val){
-        super(val);
+    public TempsItinerari(String val, String h){
+        super(val, h);
     }
 
     @Override
