@@ -1,5 +1,9 @@
 package main.java.gtfs;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -8,6 +12,11 @@ import java.util.ArrayList;
  */
 abstract public class Entity {
 
-    abstract void write();
+    protected void write(String csvLine, File file) throws IOException{
+        BufferedWriter out = new BufferedWriter(new FileWriter(file));
+        out.write(csvLine);
+        out.close();
+    }
+
     abstract void validate();
 }
