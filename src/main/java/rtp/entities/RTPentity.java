@@ -10,8 +10,8 @@ import java.util.Map;
 public abstract class RTPentity {
     String valuesString;
     Map values;
+    protected String header = null;
     static String csvSeparator = ";";
-    static String header = null;
 
     public RTPentity(String v, String h){
         this.valuesString = v;

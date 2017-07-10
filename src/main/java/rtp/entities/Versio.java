@@ -1,6 +1,5 @@
 package main.java.rtp.entities;
 
-import main.java.rtp.CSVHeaders;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +13,7 @@ import java.util.logging.Logger;
 public class Versio extends RTPentity {
 
     private static final Logger LOGGER = Logger.getLogger( Versio.class.getName() );
-    private String data;
+    String data;
 
     public Versio(String val, String h) throws IOException{
         super(val, h);

@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 public class Expedicio extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Expedicio.class.getName() );
 
+
     public Expedicio(String val, String h){
         super(val, h);
     }

@@ -12,8 +12,8 @@ import java.util.logging.Logger;
  */
 public class Operador extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Operador.class.getName() );
-    private String operador_id;
-    private String operador_nom_complet;
+    String operador_id;
+    String operador_nom_complet;
 
     public Operador(String values, String h) throws IOException{
         super(values,h);
