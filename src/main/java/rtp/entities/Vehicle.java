@@ -7,10 +7,8 @@ import java.io.IOException;
  */
 public class Vehicle extends RTPentity {
 
-    private String header;
-    public void setHeader(String h){
-        header = h;
-    }
+    String tipus_vehicle_id;
+    String n_cadira_rodes;
 
     @Override
     void setValues() throws IOException {
