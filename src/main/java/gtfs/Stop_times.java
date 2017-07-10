@@ -16,11 +16,6 @@ public class Stop_times extends Entity {
     static final String shape_dist_traveled = "";
 
     @Override
-    void write() {
-
-    }
-
-    @Override
     void validate() {
 
     }

@@ -16,11 +16,6 @@ public class Routes extends Entity {
     static final String route_text_color = "";
 
     @Override
-    void write() {
-
-    }
-
-    @Override
     void validate() {
 
     }

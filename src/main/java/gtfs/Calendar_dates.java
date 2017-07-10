@@ -9,12 +9,6 @@ public class Calendar_dates extends Entity {
     String date;
     String exception_type;
 
-
-    @Override
-    void write() {
-
-    }
-
     @Override
     void validate() {
 

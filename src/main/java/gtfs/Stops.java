@@ -19,11 +19,6 @@ public class Stops extends Entity {
     static final String wheelchair_boarding = "";
 
     @Override
-    void write() {
-
-    }
-
-    @Override
     void validate() {
 
     }

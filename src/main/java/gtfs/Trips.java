@@ -17,11 +17,6 @@ public class Trips extends Entity {
     static final String shape_id = "";
 
     @Override
-    void write() {
-
-    }
-
-    @Override
     void validate() {
 
     }

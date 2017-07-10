@@ -13,11 +13,6 @@ public class Agency extends Entity {
     static final String agency_fare_url = "";
 
     @Override
-    void write() {
-
-    }
-
-    @Override
     void validate() {
 
     }
