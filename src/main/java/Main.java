@@ -1,7 +1,5 @@
 package main.java;
 
-import main.java.rtp.InputReader;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.*;
