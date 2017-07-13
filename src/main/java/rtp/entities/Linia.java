@@ -1,8 +1,6 @@
 package main.java.rtp.entities;
 
-import main.java.rtp.CSVHeaders;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
