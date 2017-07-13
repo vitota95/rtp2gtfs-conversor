@@ -1,20 +1,23 @@
 package main.java.rtp.entities;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Parada extends RTPentity {
+    String parada_punt_id;
+    String parada_punt_desc;
+    String coord_x;
+    String coord_y;
 
-    private static final Logger LOGGER = Logger.getLogger( Parada.class.getName() );
-    private static String header = null;
+    @Override
+    void setValues() throws IOException {
 
-    public Parada(String val, String header) throws IOException{
-        super(val);
-        setValues(header, LOGGER, this.getClass());
-        validate();
+    }
+
+    public Parada(String val, String h){
+        super(val, h);
     }
 
     @Override
