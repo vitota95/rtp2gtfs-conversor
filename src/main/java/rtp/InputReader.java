@@ -1,8 +1,5 @@
 package main.java.rtp;
 
-import main.java.rtp.entities.Expedicio;
-import main.java.rtp.entities.RTPentity;
-
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -115,8 +112,9 @@ public class InputReader {
             String header = in.readLine();
             String className = ClassNames.ENTITIES_PATH + entityName;
             while((line = in.readLine()) != null) {
-                Constructor ctor = Class.forName(className).getConstructor(String.class, String.class);
-                Object object = ctor.newInstance(line,header);
+                Class<?> cl = Class.forName(className);
+                Constructor<?> ctor = cl.getConstructor(String.class, String.class);
+                Object object = ctor.newInstance(line, header);
                 entitiesArray.add(object);
             }
 

@@ -5,10 +5,17 @@ package main.java.gtfs;
  */
 
 public class Calendar extends Entity {
-    @Override
-    void write() {
 
-    }
+    String service_id;
+    String start_date;
+    String end_date;
+    String monday;
+    String tuesday;
+    String wednesday;
+    String thursday;
+    String friday;
+    String saturday;
+    String sunday;
 
     @Override
     void validate() {
