@@ -16,10 +16,9 @@ public class Itinerari extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Itinerari.class.getName() );
     private static String header = null;
 
-    public Itinerari(String val, String header) throws IOException {
-        super(val);
-        setValues(header, LOGGER, this.getClass());
-        validate();
+    public Itinerari(String val, String h)  throws IOException{
+        super(val, h);
+        setValues(LOGGER, this.getClass());
     }
 
     @Override

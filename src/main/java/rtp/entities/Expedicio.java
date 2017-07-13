@@ -1,5 +1,7 @@
 package main.java.rtp.entities;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -19,14 +21,11 @@ public class Expedicio extends RTPentity {
     String grup_horari_id;
 
 
-    public Expedicio(String val, String h){
+    public Expedicio(String val, String h) throws IOException{
         super(val, h);
+        setValues(LOGGER, this.getClass());
     }
 
-    @Override
-    void setValues() throws IOException {
-
-    }
 
     @Override
     void validate() {

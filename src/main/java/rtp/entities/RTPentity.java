@@ -1,9 +1,9 @@
 package main.java.rtp.entities;
 
+import javax.print.DocFlavor;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,11 +13,19 @@ import java.util.logging.Logger;
  */
 public abstract class RTPentity {
     String valuesString;
+    List heads = null;
     static String csvSeparator = ";";
 
-
-    public RTPentity(String v){
+    public RTPentity(String v, String h){
         this.valuesString = v;
+        if (heads == null){
+            heads = Arrays.asList(h.split(csvSeparator));
+            ListIterator<String> iterator = heads.listIterator();
+            while (iterator.hasNext())
+            {
+                iterator.set(iterator.next().toLowerCase());
+            }
+        }
     }
 
     public static boolean checkEmpty(String s){
@@ -26,24 +34,20 @@ public abstract class RTPentity {
 
     abstract void validate() throws IOException;
 
-    void setValues(String header, Logger LOGGER, Class c) throws IOException{
+    void setValues(Logger LOGGER, Class c) throws IOException{
         String[] vals = this.valuesString.split(csvSeparator);
-        String[] heads = header.split(csvSeparator);
 
-        Field[] fields = c.getFields();
-        int i;
+        Field[] fields = c.getDeclaredFields();
+        int index;
 
         for (Field f : fields){
-            i = 0;
-            for (String h : heads) {
-                if (f.getName().toLowerCase().equals(h.toLowerCase())) {
-                    try {
-                        f.set(this, vals[i]);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+            index = heads.indexOf(f.getName().toLowerCase());
+            if (index != -1) {
+                try {
+                    f.set(this, vals[index]);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
                 }
-                i++;
             }
         }
     }

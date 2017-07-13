@@ -17,8 +17,7 @@ public class Versio extends RTPentity {
 
     public Versio(String val, String h) throws IOException{
         super(val, h);
-        this.setValues();
-        this.validate();
+        setValues(LOGGER, this.getClass());
     }
 
     @Override
@@ -33,18 +32,5 @@ public class Versio extends RTPentity {
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-    }
-
-    @Override
-    void setValues() throws IOException{
-        String[] vals = this.valuesString.split(csvSeparator);
-        String[] heads = header.split(csvSeparator);
-
-        if(vals.length != heads.length){
-            LOGGER.log(Level.SEVERE, "Values and header don't match");
-            throw new IOException();
-        }
-
-        data = vals[0];
     }
 }
