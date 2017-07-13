@@ -15,33 +15,19 @@ public class Linia extends RTPentity {
     public String linia_id;
     public String linia_nom_curt;
     public String operador_id;
+    private static String header;
 
-    public Linia(String val, String h) throws IOException{
-        super(val, h);
-        this.setValues();
-        this.validate();
-    }
-
-    @Override
-    void setValues() throws IOException{
-        String[] vals = this.valuesString.split(csvSeparator);
-        String[] heads = this.header.split(csvSeparator);
-
-        if(vals.length != heads.length){
-            LOGGER.log(Level.SEVERE, "Values and header don't match");
-            throw new IOException();
-        }
-
-        linia_id = vals[0];
-        linia_nom_curt = vals[1];
-        operador_id = vals[3];
+    public Linia(String val, String header) throws IOException{
+        super(val);
+        setValues(header, LOGGER, this.getClass());
+        validate();
     }
 
     @Override
     void validate() throws IOException {
        if (checkEmpty(operador_id) || checkEmpty(linia_id)
                || checkEmpty(linia_nom_curt)){
-           throw new IOException();
+           //throw new IOException();
        }
     }
 }

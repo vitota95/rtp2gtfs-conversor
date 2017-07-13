@@ -10,13 +10,10 @@ import java.util.logging.Logger;
 public class Expedicio extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Expedicio.class.getName() );
 
-    public Expedicio(String val, String h){
-        super(val, h);
-    }
-
-    @Override
-    void setValues() throws IOException {
-
+    public Expedicio(String val, String header) throws IOException{
+        super(val);
+        setValues(header, LOGGER, this.getClass());
+        validate();
     }
 
     @Override

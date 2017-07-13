@@ -18,18 +18,15 @@ public class Converter {
 
     private static final Logger LOGGER = Logger.getLogger( Converter.class.getName() );
 
-    File directory;
-    InputReader iReader;
-    Map entities;
-    RTPChecker checker;
+    private InputReader iReader;
+    private RTPChecker checker;
 
-    public Converter(File dir){
-        this.directory = dir;
-        this.iReader = new InputReader(directory);
+    protected Converter(File dir){
+        this.iReader = new InputReader(dir);
     }
 
-    public boolean convert() throws IOException {
-        entities = iReader.getEntities();
+    protected boolean convert() throws IOException {
+        Map entities = iReader.getEntities();
         try {
             if (!checker.checkRTPMap((HashMap<String, ArrayList>) entities)) {
                 LOGGER.log(Level.SEVERE, "Cannot do conversion, some mandatory fields not present");

@@ -19,7 +19,7 @@ public class Main {
         Converter converter;
         Map arguments = new HashMap();
         File mainDirectory;
-
+        long start = System.nanoTime();
         if (args.length == 1){
             arguments.put("directory", args[0]);
             LOGGER.log(Level.FINE,"Correct number of arguments provided");
@@ -39,6 +39,9 @@ public class Main {
             else {
                 LOGGER.log(Level.SEVERE,"Incorrect directory path");
             }
+            long elapsedTime = System.nanoTime() - start;
+            double seconds = (double)elapsedTime / 1000000000.0;
+            System.out.println("Elapsed time (seconds): " + seconds);
         }
         catch (IOException io){
             io.printStackTrace();

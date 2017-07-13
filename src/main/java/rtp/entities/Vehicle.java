@@ -1,24 +1,20 @@
 package main.java.rtp.entities;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Vehicle extends RTPentity {
+    private static final Logger LOGGER = Logger.getLogger( Vehicle.class.getName() );
+    private static String header = null;
 
-    private String header;
-    public void setHeader(String h){
-        header = h;
-    }
 
-    @Override
-    void setValues() throws IOException {
-
-    }
-
-    public Vehicle(String val, String h){
-        super(val, h);
+    public Vehicle(String val, String header) throws IOException{
+        super(val);
+        setValues(header, LOGGER, this.getClass());
+        validate();
     }
 
     @Override

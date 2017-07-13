@@ -15,13 +15,6 @@ public class RTPChecker {
     public static boolean checkRTPMap(HashMap<String,ArrayList> entities){
         int fails = 0;
 
-        for (String field: ClassNames.MandatoryRTPEntities.fields) {
-            if (! entities.containsKey(field)){
-                LOGGER.log(Level.SEVERE, "Mandatory field " + field + " not present");
-                fails++;
-            }
-        }
-
         return true;
     }
 }
