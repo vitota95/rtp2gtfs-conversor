@@ -1,7 +1,6 @@
 package main.java.rtp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,11 +9,34 @@ import java.util.logging.Logger;
  */
 public class RTPChecker {
 
+
     private static final Logger LOGGER = Logger.getLogger( RTPChecker.class.getName() );
+    private List<String> entityKeys;
+    private List<String> mandatoryFiles;
 
-    public static boolean checkRTPMap(HashMap<String,ArrayList> entities){
-        int fails = 0;
+    @SuppressWarnings("unchecked")
+    public RTPChecker(Map entities){
+        entityKeys = new ArrayList<>(entities.keySet());
+        mandatoryFiles = Arrays.asList(RTPClassNames.MandatoryRTPEntities.files);
+    }
 
-        return true;
+    public boolean checkRTPMap(){
+
+        if (entityKeys.containsAll(mandatoryFiles)){
+            LOGGER.info("All mandatory files were read");
+            return true;
+        }
+        else {
+            LOGGER.log(Level.SEVERE, "Some mandatory files are missing");
+            return false;
+        }
+    }
+
+    public boolean isRestriccioPresent(){
+        return entityKeys.contains(RTPClassNames.CLASS_RESTRICCIO);
+    }
+
+    public boolean isVehiclePresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_VEHICLE);
     }
 }

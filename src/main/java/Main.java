@@ -30,7 +30,7 @@ public class Main {
         mainDirectory = new File(arguments.get("directory").toString());
         try{
             if(mainDirectory.exists()){
-                LOGGER.log(Level.FINE,"Found directory");
+                LOGGER.info("Found directory");
                 converter = new Converter(mainDirectory);
                 converter.convert();
             }

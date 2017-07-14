@@ -1,8 +1,5 @@
 package main.java.rtp;
 
-import main.java.rtp.entities.Expedicio;
-import main.java.rtp.entities.RTPentity;
-
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -63,37 +60,37 @@ public class InputReader {
 
                 switch (entrySimpleName) {
                     case FileNames.FILE_RTP_EXPEDICIO:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_EXPEDICIO);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_EXPEDICIO);
                         break;
                     case FileNames.FILE_RTP_ITINERARI:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_ITINERARI);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_ITINERARI);
                         break;
                     case FileNames.FILE_RTP_LINIA:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_LINIA);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_LINIA);
                         break;
                     case FileNames.FILE_RTP_OPERADOR:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_OPERADOR);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_OPERADOR);
                         break;
                     case FileNames.FILE_RTP_PARADA:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_PARADA);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_PARADA);
                         break;
                     case FileNames.FILE_RTP_PERIODE:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_PERIODE);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_PERIODE);
                         break;
                     case FileNames.FILE_RTP_RESTRICCIO:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_RESTRICCIO);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_RESTRICCIO);
                         break;
                     case FileNames.FILE_RTP_TEMPS_ITINERARI:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_TEMPS_ITINERARI);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TEMPS_ITINERARI);
                         break;
                     case FileNames.FILE_RTP_TRAJECTE:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_TRAJECTE);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TRAJECTE);
                         break;
                     case FileNames.FILE_RTP_VEHICLE:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_VEHICLE);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_VEHICLE);
                         break;
                     case FileNames.FILE_RTP_VERSIO:
-                        this.setRTPEntity(zif.getInputStream(entry), ClassNames.CLASS_VERSIO);
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_VERSIO);
                         break;
                     default:
                         break;
@@ -113,7 +110,7 @@ public class InputReader {
 
         try{
             String header = in.readLine();
-            String className = ClassNames.ENTITIES_PATH + entityName;
+            String className = RTPClassNames.ENTITIES_PATH + entityName;
             while((line = in.readLine()) != null) {
                 Constructor ctor = Class.forName(className).getConstructor(String.class, String.class);
                 Object object = ctor.newInstance(line,header);

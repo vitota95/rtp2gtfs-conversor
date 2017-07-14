@@ -1,5 +1,6 @@
 package main.java;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import main.java.rtp.InputReader;
 import main.java.rtp.RTPChecker;
 
@@ -21,23 +22,32 @@ public class Converter {
     private InputReader iReader;
     private RTPChecker checker;
 
-    protected Converter(File dir){
-        this.iReader = new InputReader(dir);
+    protected Converter(File dir) throws IOException{
+        iReader = new InputReader(dir);
+        Map entities =  iReader.getEntities();
+        checker = new RTPChecker(entities);
     }
 
     protected boolean convert() throws IOException {
-        Map entities = iReader.getEntities();
         try {
-            if (!checker.checkRTPMap((HashMap<String, ArrayList>) entities)) {
+            if (!checker.checkRTPMap()) {
                 LOGGER.log(Level.SEVERE, "Cannot do conversion, some mandatory fields not present");
                 throw new Exception("Conversion not possible");
             }
-            else {
-                return true;
+
+            if (checker.isRestriccioPresent()) {
+                LOGGER.info("We have restriccio");
             }
+
+            if (checker.isVehiclePresent()) {
+                LOGGER.info("We have vehicle");
+            }
+
+            return true;
         }
         catch (Exception e){
-            return false;
+            e.printStackTrace();
         }
+        return false;
     }
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by javig on 03/07/2017.
  */
-public interface ClassNames {
+public interface RTPClassNames {
     String ENTITIES_PATH = "main.java.rtp.entities.";
     String CLASS_VERSIO = "Versio";
     String CLASS_OPERADOR = "Operador";
@@ -23,7 +23,7 @@ public interface ClassNames {
      * Created by javig on 07/07/2017.
      */
     interface MandatoryRTPEntities {
-        String[] fields = {CLASS_VERSIO, CLASS_OPERADOR, CLASS_PARADA, CLASS_LINIA,
+        String[] files = {CLASS_VERSIO, CLASS_OPERADOR, CLASS_PARADA, CLASS_LINIA,
         CLASS_EXPEDICIO, CLASS_PERIODE, CLASS_ITINERARI, CLASS_TEMPS_ITINERARI, CLASS_TRAJECTE};
     }
 }
