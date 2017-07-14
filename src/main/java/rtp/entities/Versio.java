@@ -20,17 +20,17 @@ public class Versio extends RTPentity {
         setValues(LOGGER, this.getClass());
     }
 
-    @Override
-    void validate() throws IOException{
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date d = sdf.parse(data);
-            if (!data.equals(sdf.format(d))) {
-                LOGGER.log(Level.SEVERE, "Data not well formatted");
-                throw new IOException("Data not well formatted");
-            }
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    @Override
+//    void validate() throws IOException{
+//        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//            Date d = sdf.parse(data);
+//            if (!data.equals(sdf.format(d))) {
+//                LOGGER.log(Level.SEVERE, "Data not well formatted");
+//                throw new IOException("Data not well formatted");
+//            }
+//        } catch (ParseException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 }

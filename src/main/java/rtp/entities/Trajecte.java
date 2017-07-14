@@ -15,9 +15,4 @@ public class Trajecte extends RTPentity {
         super(val, h);
         setValues(LOGGER, this.getClass());
     }
-
-    @Override
-    void validate() {
-
-    }
 }

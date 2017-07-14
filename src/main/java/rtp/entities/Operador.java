@@ -19,13 +19,4 @@ public class Operador extends RTPentity {
         super(val, h);
         setValues(LOGGER, this.getClass());
     }
-
-    @Override
-    void validate() throws IOException {
-        if (operador_id == null && operador_id.isEmpty() && operador_nom_complet_public == null
-                && operador_nom_complet_public.isEmpty()){
-            LOGGER.log(Level.SEVERE, "Some values are not present");
-            throw new IOException();
-        }
-    }
 }

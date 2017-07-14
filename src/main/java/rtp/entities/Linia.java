@@ -18,13 +18,4 @@ public class Linia extends RTPentity {
         super(val, h);
         setValues(LOGGER, this.getClass());
     }
-
-
-    @Override
-    void validate() throws IOException {
-       if (checkEmpty(operador_id) || checkEmpty(linia_id)
-               || checkEmpty(linia_nom_curt)){
-           throw new IOException();
-       }
-    }
 }

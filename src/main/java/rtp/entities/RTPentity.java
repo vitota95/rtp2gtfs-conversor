@@ -12,9 +12,9 @@ import java.util.logging.Logger;
  * Created by javig on 03/07/2017.
  */
 public abstract class RTPentity {
-    String valuesString;
-    List heads = null;
-    static String csvSeparator = ";";
+    private String valuesString;
+    private List heads = null;
+    private static String csvSeparator = ";";
 
     public RTPentity(String v, String h){
         this.valuesString = v;
@@ -28,11 +28,9 @@ public abstract class RTPentity {
         }
     }
 
-    public static boolean checkEmpty(String s){
+    private static boolean checkEmpty(String s){
         return (s == null && s.isEmpty());
     }
-
-    abstract void validate() throws IOException;
 
     void setValues(Logger LOGGER, Class c) throws IOException{
         String[] vals = this.valuesString.split(csvSeparator, -1);
@@ -44,7 +42,12 @@ public abstract class RTPentity {
             index = heads.indexOf(f.getName().toLowerCase());
             if (index != -1) {
                 try {
-                    f.set(this, vals[index]);
+                    if (!checkEmpty(vals[index]))
+                        f.set(this, vals[index]);
+                    else {
+                        LOGGER.log(Level.SEVERE, "Empty value " + heads.get(index));
+                        throw new IOException("Empty value detected");
+                    }
                 } catch (IllegalAccessException e) {
                     LOGGER.log(Level.SEVERE, "Error setValues");
                     e.printStackTrace();

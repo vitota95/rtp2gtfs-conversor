@@ -21,8 +21,8 @@ public class InputReader {
 
     private static final Logger LOGGER = Logger.getLogger( InputReader.class.getName() );
 
-    private Map entities;
-    private ArrayList entitiesArray = null;
+    private Map<String, ArrayList> entities;
+    private ArrayList<Object> entitiesArray = null;
     private File directory;
 
     public InputReader(File dir){
@@ -104,7 +104,7 @@ public class InputReader {
     }
 
     private void setRTPEntity(InputStream is, String entityName) throws IOException{
-        entitiesArray = new ArrayList();
+        entitiesArray = new ArrayList<>();
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         String line;
 

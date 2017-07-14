@@ -16,9 +16,4 @@ public class Restriccio extends RTPentity {
         super(val, h);
         setValues(LOGGER, this.getClass());
     }
-
-    @Override
-    void validate() {
-
-    }
 }
