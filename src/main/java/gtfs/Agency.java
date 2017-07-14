@@ -5,8 +5,8 @@ package main.java.gtfs;
  */
 public class Agency extends Entity {
 
-    String agency_name;
-    String agency_id;
+    public String agency_name;
+    public String agency_id;
     static final String agency_url = "https://www.changeURL.notreal";
     static final String agency_timezone = "Europe/Madrid";
     static final String agency_phone = "";
