@@ -1,4 +1,4 @@
-package main.java.gtfs;
+package gtfs;
 
 /**
  * Created by javig on 14/07/2017.

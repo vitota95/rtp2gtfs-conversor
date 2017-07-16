@@ -1,4 +1,4 @@
-package main.java.rtp;
+package rtp;
 
 import java.io.*;
 import java.lang.reflect.Constructor;

@@ -1,4 +1,4 @@
-package main.java.rtp;
+package rtp;
 
 /**
  * Created by javig on 07/07/2017.

@@ -1,8 +1,4 @@
-package main.java.writers;
-
-import main.java.Main;
-import main.java.gtfs.Entity;
-import main.java.gtfs.GTFSClassNames;
+package writers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,24 +14,25 @@ import java.util.zip.ZipOutputStream;
 
 public class Writer  {
 
-    private static final String outputDirectory = Main.getOutputDirectory();
     private static final String GTFSName = "GTFS.zip";
     private static ZipOutputStream outputStream;
     private static Writer instance;
 
-    private Writer(){}
+    public Writer() {
+    }
 
     public static Writer getInstance() throws  FileNotFoundException{
         if(instance == null){
             instance = new Writer();
-            File file = new File(outputDirectory + GTFSName);
-            outputStream = new ZipOutputStream(new FileOutputStream(file));
         }
         return instance;
     }
 
-    public void write(String fileName, ArrayList<String> entities) throws IOException{
+    public void write(String fileName, ArrayList<String> entities, String outputDirectory) throws IOException {
+        File file = new File(outputDirectory + GTFSName);
         StringBuilder sb = new StringBuilder();
+
+        outputStream = new ZipOutputStream(new FileOutputStream(file));
         sb.append(String.join("\n", entities));
         ZipEntry entry = new ZipEntry(fileName);
         outputStream.putNextEntry(entry);
