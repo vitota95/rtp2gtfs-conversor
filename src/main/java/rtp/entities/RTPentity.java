@@ -19,7 +19,7 @@ public abstract class RTPentity {
     public RTPentity(String v, String h){
         this.valuesString = v;
         if (heads == null){
-            heads = Arrays.asList(h.split(csvSeparator));
+            heads = Arrays.asList(h.split(csvSeparator, -1));
             ListIterator<String> iterator = heads.listIterator();
             while (iterator.hasNext())
             {

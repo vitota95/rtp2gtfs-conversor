@@ -3,7 +3,7 @@ package gtfs;
 /**
  * Created by javig on 03/07/2017.
  */
-public class Trips extends Entity {
+public class Trips extends GTFSEntity {
 
     String service_id;
     String trip_id;
@@ -16,8 +16,9 @@ public class Trips extends Entity {
     static final String block_id = "";
     static final String shape_id = "";
 
+
     @Override
-    void validate() {
+    void setValues(GTFSParameters gtfsParameters) {
 
     }
 }

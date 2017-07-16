@@ -3,7 +3,7 @@ package gtfs;
 /**
  * Created by javig on 03/07/2017.
  */
-public class Stop_times extends Entity {
+public class Stop_times extends GTFSEntity {
 
     String trip_id;
     String arrival_time;
@@ -15,8 +15,9 @@ public class Stop_times extends Entity {
     static final String drop_off_type = "";
     static final String shape_dist_traveled = "";
 
+
     @Override
-    void validate() {
+    void setValues(GTFSParameters gtfsParameters) {
 
     }
 }

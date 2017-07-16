@@ -4,7 +4,7 @@ package rtp;
  * Created by javig on 03/07/2017.
  */
 public interface RTPClassNames {
-    String ENTITIES_PATH = "main.java.rtp.entities.";
+    String ENTITIES_PATH = "rtp.entities.";
     String CLASS_VERSIO = "Versio";
     String CLASS_OPERADOR = "Operador";
     String CLASS_PARADA = "Parada";

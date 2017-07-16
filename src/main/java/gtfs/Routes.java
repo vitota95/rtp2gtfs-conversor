@@ -3,7 +3,7 @@ package gtfs;
 /**
  * Created by javig on 03/07/2017.
  */
-public class Routes extends Entity {
+public class Routes extends GTFSEntity {
 
     String route_id;
     String route_short_name;
@@ -16,7 +16,7 @@ public class Routes extends Entity {
     static final String route_text_color = "";
 
     @Override
-    void validate() {
+    void setValues(GTFSParameters gtfsParameters) {
 
     }
 }

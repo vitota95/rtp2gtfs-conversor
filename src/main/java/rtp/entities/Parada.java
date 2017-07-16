@@ -9,10 +9,33 @@ import java.util.logging.Logger;
 public class Parada extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Parada.class.getName() );
 
-    String parada_punt_id;
-    String parada_punt_desc;
-    String coord_x;
-    String coord_y;
+    private String parada_punt_id;
+    private String parada_punt_desc;
+    private String coord_x;
+    private String parada_id;
+
+    public String getParada_id() {
+        return parada_id;
+    }
+
+    public String getParada_punt_id() {
+        return parada_punt_id;
+    }
+
+    public String getParada_punt_desc() {
+        return parada_punt_desc;
+    }
+
+    public String getCoord_x() {
+        return coord_x;
+    }
+
+    public String getCoord_y() {
+
+        return coord_y;
+    }
+
+    private String coord_y;
 
     public Parada(String val, String h)  throws IOException{
         super(val, h);

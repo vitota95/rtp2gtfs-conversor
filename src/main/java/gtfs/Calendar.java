@@ -4,7 +4,7 @@ package gtfs;
  * Created by javig on 03/07/2017.
  */
 
-public class Calendar extends Entity {
+public class Calendar extends GTFSEntity {
 
     String service_id;
     String start_date;
@@ -17,8 +17,9 @@ public class Calendar extends Entity {
     String saturday;
     String sunday;
 
+
     @Override
-    void validate() {
+    void setValues(GTFSParameters gtfsParameters) {
 
     }
 }

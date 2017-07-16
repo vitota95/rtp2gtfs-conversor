@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 /**
  * Created by javig on 03/07/2017.
  */
-abstract public class Entity {
-    private static final Logger LOGGER = Logger.getLogger( Entity.class.getName() );
+abstract public class GTFSEntity {
+    private static final Logger LOGGER = Logger.getLogger(GTFSEntity.class.getName());
 
     static final String csvSeparator = ";";
 
@@ -34,5 +34,5 @@ abstract public class Entity {
         return csvString;
     }
 
-    abstract void validate();
+    abstract void setValues(GTFSParameters gtfsParameters);
 }
