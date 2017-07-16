@@ -21,12 +21,15 @@ public class Converter {
 
     private InputReader iReader;
     private RTPChecker checker;
+    private String outputDirectory;
     Map<String, ArrayList> entitiesMap = new HashMap<>();
 
-    protected Converter(File dir) throws IOException{
+
+    protected Converter(File dir, String od) throws IOException{
         iReader = new InputReader(dir);
         Map entities =  iReader.getEntities();
         checker = new RTPChecker(entities);
+        outputDirectory = od;
     }
 
     protected boolean convert() throws IOException {
@@ -81,7 +84,7 @@ public class Converter {
         Writer writer = Writer.getInstance();
         entitiesMap.forEach((fileName,value) -> {
             try {
-                writer.write(fileName, value);
+                writer.write(fileName, value, outputDirectory);
             }catch (IOException io){
                 io.printStackTrace();
             }

@@ -37,7 +37,7 @@ public class Main {
         try{
             if(mainDirectory.exists()){
                 LOGGER.info("Found directory");
-                converter = new Converter(mainDirectory);
+                converter = new Converter(mainDirectory, outputDirectory);
                 converter.checkGTFSMap();
                 converter.convert();
             }
