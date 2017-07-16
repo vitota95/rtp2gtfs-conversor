@@ -1,12 +1,8 @@
-package main.java;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import main.java.gtfs.Agency;
-import main.java.gtfs.Entity;
-import main.java.gtfs.GTFSClassNames;
-import main.java.rtp.InputReader;
-import main.java.rtp.RTPChecker;
-import main.java.writers.Writer;
+import gtfs.Agency;
+import rtp.InputReader;
+import rtp.RTPChecker;
+import writers.Writer;
 
 import java.io.File;
 import java.io.IOException;

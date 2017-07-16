@@ -1,16 +1,13 @@
-package main.java;
-
-import main.java.gtfs.GTFSClassNames;
-import main.java.writers.Writer;
+import gtfs.GTFSClassNames;
+import writers.Writer;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
     private static final Logger LOGGER = Logger.getLogger( Main.class.getName() );
@@ -57,10 +54,6 @@ public class Main {
         //writerTest();
     }
 
-    public static String getOutputDirectory() {
-        return outputDirectory;
-    }
-
     public static void writerTest() {
         ArrayList<String> list = new ArrayList<String>() {{
             add("A;bababa;;;");
@@ -70,7 +63,7 @@ public class Main {
 
         try {
             Writer writer = Writer.getInstance();
-            writer.write(GTFSClassNames.CLASS_AGENCY,list);
+            writer.write(GTFSClassNames.CLASS_AGENCY, list, outputDirectory);
         } catch (IOException io){
             io.printStackTrace();
         }

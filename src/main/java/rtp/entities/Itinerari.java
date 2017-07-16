@@ -1,4 +1,4 @@
-package main.java.rtp.entities;
+package rtp.entities;
 
 import java.io.IOException;
 import java.util.logging.Logger;

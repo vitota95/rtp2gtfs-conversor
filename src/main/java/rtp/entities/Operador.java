@@ -1,10 +1,6 @@
-package main.java.rtp.entities;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import main.java.rtp.CSVHeaders;
+package rtp.entities;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

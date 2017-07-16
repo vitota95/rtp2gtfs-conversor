@@ -1,6 +1,4 @@
-package main.java.rtp;
-
-import java.util.ArrayList;
+package rtp;
 
 /**
  * Created by javig on 03/07/2017.
