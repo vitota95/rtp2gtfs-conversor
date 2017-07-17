@@ -1,6 +1,9 @@
 package gtfs;
 
+import rtp.entities.RTPentity;
+
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +14,7 @@ import java.util.logging.Logger;
 abstract public class GTFSEntity {
     private static final Logger LOGGER = Logger.getLogger(GTFSEntity.class.getName());
 
-    static final String csvSeparator = ";";
+    private static final String csvSeparator = ";";
 
     public String convertToCSV(Class c) {
 
@@ -34,5 +37,10 @@ abstract public class GTFSEntity {
         return csvString;
     }
 
-    abstract void setValues(GTFSParameters gtfsParameters);
+    void setValues(GTFSParameters gtfsParameters) {
+        Map<String, RTPentity> objects = gtfsParameters.getRTPobjects();
+        objects.forEach(this::getEntityParameters);
+    }
+
+    abstract void getEntityParameters(String key, RTPentity value);
 }

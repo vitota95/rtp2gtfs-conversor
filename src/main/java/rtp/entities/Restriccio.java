@@ -8,9 +8,21 @@ import java.util.logging.Logger;
  */
 public class Restriccio extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Restriccio.class.getName() );
-    String periode_id;
-    String restriccio_id;
-    String dies;
+    private String periode_id;
+    private String restriccio_id;
+    private String dies;
+
+    public String getPeriode_id() {
+        return periode_id;
+    }
+
+    public String getRestriccio_id() {
+        return restriccio_id;
+    }
+
+    public String getDies() {
+        return dies;
+    }
 
     public Restriccio(String val, String h)  throws IOException{
         super(val, h);

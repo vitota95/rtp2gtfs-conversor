@@ -1,17 +1,18 @@
 package gtfs;
 
+import rtp.entities.RTPentity;
+
 /**
  * Created by javig on 03/07/2017.
  */
 public class Calendar_dates extends GTFSEntity {
 
-    String service_id;
-    String date;
-    String exception_type;
+    private String service_id;
+    private String date;
+    private String exception_type;
 
     @Override
-    void setValues(GTFSParameters gtfsParameters) {
+    void getEntityParameters(String key, RTPentity value) {
 
     }
-
 }

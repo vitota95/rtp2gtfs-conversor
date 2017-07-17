@@ -8,9 +8,22 @@ import java.util.logging.Logger;
  */
 public class Periode extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Periode.class.getName() );
-    String periode_id;
-    String periode_dinici;
-    String periode_dfi;
+    private String periode_id;
+    private String periode_dinici;
+
+    public String getPeriode_id() {
+        return periode_id;
+    }
+
+    public String getPeriode_dinici() {
+        return periode_dinici;
+    }
+
+    public String getPeriode_dfi() {
+        return periode_dfi;
+    }
+
+    private String periode_dfi;
 
     public Periode(String val, String h)  throws IOException{
         super(val, h);

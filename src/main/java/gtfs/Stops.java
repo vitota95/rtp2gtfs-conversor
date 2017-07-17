@@ -3,10 +3,11 @@ package gtfs;
 import geotool.UTM2WGS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import rtp.RTPClassNames;
 import rtp.entities.Parada;
 import rtp.entities.RTPentity;
 
-import java.util.Map;
+import java.io.IOException;
 
 /**
  * Created by javig on 03/07/2017.
@@ -28,11 +29,9 @@ public class Stops extends GTFSEntity {
 
 
     @Override
-    void setValues(GTFSParameters gtfsParameters) {
-        Map<String, RTPentity> objects = gtfsParameters.getRTPobjects();
-
-        objects.forEach((String key, RTPentity value) -> {
-            if (key.equalsIgnoreCase("Parada")) {
+    void getEntityParameters(String key, RTPentity value) {
+        try {
+            if (key.equalsIgnoreCase(RTPClassNames.CLASS_PARADA)) {
                 final Parada parada = (Parada) value;
                 stop_id = parada.getParada_punt_id();
                 stop_code = parada.getParada_id();
@@ -44,8 +43,12 @@ public class Stops extends GTFSEntity {
                 } catch (FactoryException | TransformException e) {
                     e.printStackTrace();
                 }
-
+            } else {
+                throw new IOException("Routes unknown parameter: " + key);
             }
-        });
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
     }
+
 }
