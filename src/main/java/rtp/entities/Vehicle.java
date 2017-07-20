@@ -9,11 +9,19 @@ import java.util.logging.Logger;
 public class Vehicle extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( TempsItinerari.class.getName() );
 
-    String tipus_vehicle_id;
-    String n_cadira_rodes;
+    private String tipus_vehicle_id;
+    private String n_cadira_rodes;
 
     public Vehicle(String val, String h) throws IOException{
         super(val, h);
         setValues(LOGGER, this.getClass());
+    }
+
+    public String getTipus_vehicle_id() {
+        return tipus_vehicle_id;
+    }
+
+    public String getN_cadira_rodes() {
+        return n_cadira_rodes;
     }
 }

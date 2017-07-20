@@ -16,8 +16,8 @@ abstract public class GTFSEntity {
 
     private static final String csvSeparator = ";";
 
-    public String convertToCSV(Class c) {
-
+    public String convertToCSV() {
+        Class c = this.getClass();
         Field [] fields = c.getDeclaredFields();
         String csvString = "";
 
@@ -37,7 +37,7 @@ abstract public class GTFSEntity {
         return csvString;
     }
 
-    void setValues(GTFSParameters gtfsParameters) {
+    public void setValues(GTFSParameters gtfsParameters) {
         Map<String, RTPentity> objects = gtfsParameters.getRTPobjects();
         objects.forEach(this::getEntityParameters);
     }

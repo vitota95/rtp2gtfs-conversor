@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -21,13 +20,13 @@ public class InputReader {
 
     private static final Logger LOGGER = Logger.getLogger( InputReader.class.getName() );
 
-    private Map<String, ArrayList> entities;
+    private HashMap<String, ArrayList> entities;
     private ArrayList<Object> entitiesArray = null;
     private File directory;
 
     public InputReader(File dir){
         this.directory = dir;
-        this.entities = new HashMap<String,ArrayList>();
+        this.entities = new HashMap<>();
     }
 
     /***
@@ -35,7 +34,7 @@ public class InputReader {
      * @return entitiesArray
      */
 
-    public Map getEntities() throws IOException{
+    public HashMap<String, ArrayList> getEntities() throws IOException {
         if (entitiesArray == null){
             readRTPFile();
         }

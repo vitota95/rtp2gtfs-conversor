@@ -7,14 +7,33 @@ import java.util.logging.Logger;
  * Created by javig on 03/07/2017.
  */
 public class Itinerari extends RTPentity {
-    String linia_id;
-    String trajecte_id;
-    String direccio_id;
-    String sequencia_id;
-    String parada_punt_id;
+    private String linia_id;
+    private String trajecte_id;
+    private String direccio_id;
+    private String sequencia_id;
+    private String parada_punt_id;
+
+    public String getLinia_id() {
+        return linia_id;
+    }
+
+    public String getTrajecte_id() {
+        return trajecte_id;
+    }
+
+    public String getDireccio_id() {
+        return direccio_id;
+    }
+
+    public String getSequencia_id() {
+        return sequencia_id;
+    }
+
+    public String getParada_punt_id() {
+        return parada_punt_id;
+    }
 
     private static final Logger LOGGER = Logger.getLogger( Itinerari.class.getName() );
-    private static String header = null;
 
     public Itinerari(String val, String h)  throws IOException{
         super(val, h);

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 public class Main {
     private static final Logger LOGGER = Logger.getLogger( Main.class.getName() );
+    private static final double NANOS_TO_SECONDS = 1000000000.0;
     private static String outputDirectory;
     /**
      * Main function, entry point of the application, gets rtp files directory
@@ -35,17 +36,22 @@ public class Main {
 
         mainDirectory = new File(arguments.get("Indirectory").toString());
         try{
+            boolean conversionDone = false;
             if(mainDirectory.exists()){
                 LOGGER.info("Found directory");
                 converter = new Converter(mainDirectory, outputDirectory);
-                converter.checkGTFSMap();
-                converter.convert();
+                conversionDone = converter.convert();
             }
             else {
                 LOGGER.log(Level.SEVERE,"Incorrect directory path");
             }
+
+            if (conversionDone) {
+                LOGGER.fine("Conversion performed GTFS file saved to ");
+            }
+
             long elapsedTime = System.nanoTime() - start;
-            double seconds = (double)elapsedTime / 1000000000.0;
+            double seconds = (double) elapsedTime / NANOS_TO_SECONDS;
             System.out.println("Elapsed time (seconds): " + seconds);
         }
         catch (IOException io){

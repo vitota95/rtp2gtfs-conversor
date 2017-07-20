@@ -8,11 +8,19 @@ import java.util.logging.Logger;
  */
 public class Trajecte extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( TempsItinerari.class.getName() );
-    String linia_id;
-    String trajecte_id;
+    private String linia_id;
+    private String trajecte_id;
 
     public Trajecte(String val, String h) throws IOException{
         super(val, h);
         setValues(LOGGER, this.getClass());
+    }
+
+    public String getLinia_id() {
+        return linia_id;
+    }
+
+    public String getTrajecte_id() {
+        return trajecte_id;
     }
 }

@@ -42,8 +42,10 @@ public abstract class RTPentity {
             index = heads.indexOf(f.getName().toLowerCase());
             if (index != -1) {
                 try {
-                    if (!checkEmpty(vals[index]))
+                    if (!checkEmpty(vals[index])) {
+                        f.setAccessible(true);
                         f.set(this, vals[index]);
+                    }
                     else {
                         LOGGER.log(Level.SEVERE, "Empty value " + heads.get(index));
                         throw new IOException("Empty value detected");

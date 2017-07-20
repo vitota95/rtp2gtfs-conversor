@@ -9,14 +9,17 @@ import java.util.logging.Logger;
 public class Versio extends RTPentity {
 
     private static final Logger LOGGER = Logger.getLogger( Versio.class.getName() );
-    String data;
+    private String data;
 
     public Versio(String val, String h) throws IOException{
         super(val, h);
         setValues(LOGGER, this.getClass());
     }
 
-//    @Override
+    public String getData() {
+        return data;
+    }
+    //    @Override
 //    void validate() throws IOException{
 //        try {
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");

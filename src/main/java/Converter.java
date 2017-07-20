@@ -1,7 +1,12 @@
 
 import gtfs.Agency;
+import gtfs.GTFSClassNames;
+import gtfs.GTFSParameters;
 import rtp.InputReader;
 import rtp.RTPChecker;
+import rtp.RTPClassNames;
+import rtp.entities.Operador;
+import rtp.entities.RTPentity;
 import writers.Writer;
 
 import java.io.File;
@@ -22,20 +27,52 @@ public class Converter {
     private InputReader iReader;
     private RTPChecker checker;
     private String outputDirectory;
-    Map<String, ArrayList> entitiesMap = new HashMap<>();
+    private HashMap<String, ArrayList> RTPentitiesMap;
+    private HashMap<String, ArrayList> GTFSentitiesMap;
 
 
-    protected Converter(File dir, String od) throws IOException{
+    Converter(File dir, String od) throws IOException {
         iReader = new InputReader(dir);
-        Map entities =  iReader.getEntities();
-        checker = new RTPChecker(entities);
+        RTPentitiesMap = iReader.getEntities();
+        checker = new RTPChecker(RTPentitiesMap);
         outputDirectory = od;
+        GTFSentitiesMap = new HashMap<>();
     }
 
-    protected boolean convert() throws IOException {
+    boolean convert() throws IOException {
+        Agency agency;
+
+
+        getAgency(RTPClassNames.CLASS_OPERADOR);
+        writeGTFSFile();
+        if (checkRTPEntities()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    void getAgency(String key) {
+        ArrayList<Operador> operadors = RTPentitiesMap.get(RTPClassNames.CLASS_OPERADOR);
+        ArrayList<String> agenciesCSV = new ArrayList<>();
+
+        for (Operador operador : operadors) {
+            Map<String, RTPentity> mapParameters = new HashMap<>();
+            Agency agency = new Agency();
+            GTFSParameters agencyParemeters = new GTFSParameters();
+
+            mapParameters.put(key, operador);
+            agencyParemeters.setRTPobjects(mapParameters);
+            agency.setValues(agencyParemeters);
+            agenciesCSV.add(agency.convertToCSV());
+        }
+        addToEntitiesMap(GTFSClassNames.CLASS_AGENCY, agenciesCSV);
+    }
+
+    boolean checkRTPEntities() {
         try {
             if (!checker.checkRTPMap()) {
-                LOGGER.log(Level.SEVERE, "Cannot do conversion, some mandatory fields not present");
+                LOGGER.log(Level.SEVERE, "Cannot do conversion, some mandatory files not present");
                 throw new Exception("Conversion not possible");
             }
 
@@ -55,7 +92,7 @@ public class Converter {
         return false;
     }
 
-    public void checkGTFSMap() {
+    void checkGTFSMap() {
         Agency agency1 = new Agency();
         agency1.agency_id = "10";
         agency1.agency_name = "agencia1";
@@ -63,8 +100,8 @@ public class Converter {
         agency2.agency_id = "10";
         agency2.agency_name = "agencia2";
         ArrayList<String> arrAgency = new ArrayList<>();
-        arrAgency.add(agency1.convertToCSV(agency1.getClass()));
-        arrAgency.add(agency2.convertToCSV(agency2.getClass()));
+        arrAgency.add(agency1.convertToCSV());
+        arrAgency.add(agency2.convertToCSV());
         addToEntitiesMap("agency.txt", arrAgency);
 
         try {
@@ -75,14 +112,14 @@ public class Converter {
     }
 
     private void addToEntitiesMap(String key, ArrayList<String> entityCSV) {
-        entitiesMap.put(key, entityCSV);
+        GTFSentitiesMap.put(key, entityCSV);
     }
 
 
     private void writeGTFSFile() throws IOException {
 
         Writer writer = Writer.getInstance();
-        entitiesMap.forEach((fileName,value) -> {
+        GTFSentitiesMap.forEach((fileName, value) -> {
             try {
                 writer.write(fileName, value, outputDirectory);
             }catch (IOException io){
