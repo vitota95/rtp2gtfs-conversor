@@ -22,6 +22,9 @@ public class Trips extends GTFSEntity {
     static final String block_id = "";
     static final String shape_id = "";
 
+    Trips(String header) {
+        super(header);
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) {

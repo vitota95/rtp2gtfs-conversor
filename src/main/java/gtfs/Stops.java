@@ -27,6 +27,9 @@ public class Stops extends GTFSEntity {
     static final String stop_timezone = "Europe/Madrid";
     static final String wheelchair_boarding = "";
 
+    Stops(String header) {
+        super(header);
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) {

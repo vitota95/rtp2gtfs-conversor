@@ -27,6 +27,10 @@ public class Calendar extends GTFSEntity {
     private String saturday;
     private String sunday;
 
+    Calendar(String header){
+        super(header);
+    }
+
 
     @Override
     void getEntityParameters(String key, RTPentity value) {

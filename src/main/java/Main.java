@@ -18,7 +18,7 @@ public class Main {
      * and calls inputReader.
      *@param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
         Converter converter;
         Map arguments = new HashMap();
         File mainDirectory;

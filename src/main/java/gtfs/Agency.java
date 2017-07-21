@@ -5,31 +5,45 @@ import rtp.entities.Operador;
 import rtp.entities.RTPentity;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Agency extends GTFSEntity {
+    private AgencyParams agencyParams;
 
-    public String agency_name;
-    public String agency_id;
-    static final String agency_url = "https://www.changeURL.notreal";
-    static final String agency_timezone = "Europe/Madrid";
-    static final String agency_phone = "";
-    static final String agency_fare_url = "";
+    public Agency(String header) {
+        super(header);
+        agencyParams = new AgencyParams();
+    }
 
     @Override
-    void getEntityParameters(String key, RTPentity value) {
+    void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
         try {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_OPERADOR)) {
                 final Operador operador = (Operador) value;
-                agency_id = operador.getOperador_id();
-                agency_name = operador.getOperador_nom_complet_public();
+                agencyParams.agency_id = operador.getOperador_id();
+                agencyParams.agency_name = operador.getOperador_nom_complet_public();
+                setGtfsValues(agencyParams);
             } else {
                 throw new IOException("Agency unknown parameter: " + key);
             }
         } catch (IOException io) {
             io.printStackTrace();
         }
+
     }
+}
+
+class AgencyParams
+{
+    String agency_name;
+    String agency_id;
+    static final String agency_url = "https://www.changeURL.notreal";
+    static final String agency_timezone = "Europe/Madrid";
+    static final String agency_lang = "cat";
+    static final String agency_phone = "";
+    static final String agency_fare_url = "";
 }

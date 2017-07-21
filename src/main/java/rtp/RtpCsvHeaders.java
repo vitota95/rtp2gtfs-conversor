@@ -3,7 +3,7 @@ package rtp;
 /**
  * Created by javig on 03/07/2017.
  */
-public interface CSVHeaders {
+public interface RtpCsvHeaders {
     String CLASS_VERSIO = "DATA;";
     String CLASS_OPERADOR = "OPERADOR_ID;OPERADOR_NOM_CURT;OPERADOR_NOM_CURT_PUBLIC;OPERADOR_NOM_COMPLET_PUBLIC;";
     String CLASS_PARADA = "PARADA_PUNT_ID;PARADA_PUNT_DESC;PARADA_PUNT_DESC_CURTA;COORD_X;COORD_Y;PARADA_ID;MUNICIPI_ID;";

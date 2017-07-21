@@ -11,6 +11,10 @@ public class Calendar_dates extends GTFSEntity {
     private String date;
     private String exception_type;
 
+    Calendar_dates(String header) {
+        super(header);
+    }
+
     @Override
     void getEntityParameters(String key, RTPentity value) {
 

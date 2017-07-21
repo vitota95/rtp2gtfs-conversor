@@ -17,6 +17,9 @@ public class Stop_times extends GTFSEntity {
     static final String drop_off_type = "";
     static final String shape_dist_traveled = "";
 
+    Stop_times(String header){
+        super(header);
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) {
