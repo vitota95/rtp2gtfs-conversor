@@ -2,9 +2,10 @@ package gtfs;
 
 import rtp.entities.RTPentity;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,30 +16,29 @@ import java.util.logging.Logger;
 abstract public class GTFSEntity {
     private static final Logger LOGGER = Logger.getLogger(GTFSEntity.class.getName());
     private static final String csvSeparator = ",";
-    private String header;
-    Map<String,String> gtfsValues;
-
-    GTFSEntity(String h) {
-        header = h;
-    }
-
-    private String convertToCSV() {
-        int i = 0;
-        int len = gtfsValues.size();
-        final List headerArray = Arrays.asList(header.split(csvSeparator));
-        String[] toCsv = new String[len];
-
-        gtfsValues.forEach((key, value) -> {
-            int index = headerArray.indexOf(key);
-            toCsv[index] = value;
-        });
-
-        return String.join(csvSeparator, toCsv);
-    }
+    private Map<String, String> gtfsValues;
 
     public String getCsvString(GTFSParameters gtfsParameters) throws IllegalAccessException {
         setValues(gtfsParameters);
         return convertToCSV();
+    }
+
+    private String convertToCSV() {
+        int len = gtfsValues.size();
+        String[] toCsv = new String[len];
+
+        gtfsValues.forEach((key, value) -> {
+            int index = this.getHeader().indexOf(key);
+            try {
+                toCsv[index] = value;
+            } catch (IndexOutOfBoundsException iob) {
+                LOGGER.log(Level.SEVERE, "This key was not found: " + key);
+                iob.printStackTrace();
+            }
+
+        });
+
+        return String.join(csvSeparator, toCsv);
     }
 
     private void setValues(GTFSParameters gtfsParameters) throws IllegalAccessException {
@@ -64,5 +64,7 @@ abstract public class GTFSEntity {
     }
 
     abstract void getEntityParameters(String key, RTPentity value) throws IllegalAccessException;
+
+    abstract List<String> getHeader();
 }
 

@@ -1,16 +1,16 @@
-
-import gtfs.Agency;
-import gtfs.GTFSClassNames;
-import gtfs.GTFSParameters;
-import gtfs.GtfsCsvHeaders;
+import gtfs.*;
 import rtp.InputReader;
 import rtp.RTPChecker;
 import rtp.RTPClassNames;
-import rtp.entities.Operador;
+import rtp.entities.Periode;
 import rtp.entities.RTPentity;
+import rtp.entities.Restriccio;
 import writers.Writer;
+
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +40,10 @@ class Converter {
         GTFSentitiesMap = new HashMap<>();
     }
 
-    boolean convert() throws IOException, IllegalAccessException {
-        getAgency(RTPClassNames.CLASS_OPERADOR);
+    boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
+        setGtfs(Agency.class, GTFSClassNames.CLASS_AGENCY, RTPClassNames.CLASS_OPERADOR);
+        setGtfs(Trips.class, GTFSClassNames.CLASS_TRIPS, RTPClassNames.CLASS_EXPEDICIO);
+        setGtfs(Routes.class, GTFSClassNames.CLASS_ROUTES, RTPClassNames.CLASS_LINIA);
         writeGTFSFile();
 
         if (checkRTPEntities()) {
@@ -49,23 +51,6 @@ class Converter {
         }
 
         return false;
-    }
-
-    void getAgency(String key) throws IllegalAccessException {
-        ArrayList<Operador> operadors = RTPentitiesMap.get(RTPClassNames.CLASS_OPERADOR);
-        ArrayList<String> agenciesCSV = new ArrayList<>();
-
-        agenciesCSV.add(GtfsCsvHeaders.CLASS_AGENCY);
-        for (Operador operador : operadors) {
-            Map<String, RTPentity> mapParameters = new HashMap<>();
-            Agency agency = new Agency(GtfsCsvHeaders.CLASS_AGENCY);
-            GTFSParameters agencyRTPs = new GTFSParameters();
-
-            mapParameters.put(key, operador);
-            agencyRTPs.setRTPobjects(mapParameters);
-            agenciesCSV.add(agency.getCsvString(agencyRTPs));
-        }
-        addToEntitiesMap(GTFSClassNames.CLASS_AGENCY, agenciesCSV);
     }
 
     boolean checkRTPEntities() {
@@ -106,5 +91,31 @@ class Converter {
             }
         });
 
+    }
+
+
+    private void setGtfs(Class cl, String gtfsFileName, String rtpClass) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+        ArrayList<RTPentity> rtPentities = RTPentitiesMap.get(rtpClass);
+        ArrayList<String> csv = new ArrayList<>();
+
+        //Get GTFS object by reflection
+        Constructor<?> ctor = cl.getConstructor();
+        Object object = ctor.newInstance();
+        GTFSEntity entity = (GTFSEntity) object;
+
+        csv.add(GtfsCsvHeaders.CLASS_ROUTES_CSV);
+        for (RTPentity rtPentity : rtPentities) {
+            Map<String, RTPentity> mapParameters = new HashMap<>();
+            GTFSParameters rtpValues = new GTFSParameters();
+            mapParameters.put(rtpClass, rtPentity);
+            rtpValues.setRTPobjects(mapParameters);
+            csv.add(entity.getCsvString(rtpValues));
+        }
+        addToEntitiesMap(gtfsFileName, csv);
+    }
+
+    private void setCalendars(String key) throws IllegalAccessException {
+        ArrayList<Restriccio> restriccios = RTPentitiesMap.get(RTPClassNames.CLASS_RESTRICCIO);
+        ArrayList<Periode> periodes = RTPentitiesMap.get(RTPClassNames.CLASS_PERIODE);
     }
 }

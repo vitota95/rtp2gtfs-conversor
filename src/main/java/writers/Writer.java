@@ -1,12 +1,14 @@
 package writers;
 
-import java.io.File;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by javig on 14/07/2017.
@@ -27,18 +29,21 @@ public class Writer  {
         return instance;
     }
 
+    //Source: https://stackoverflow.com/questions/2223434/appending-files-to-a-zip-file-with-java
     public void write(String fileName, ArrayList<String> entities, String outputDirectory) throws IOException {
-        File file = new File(outputDirectory + GTFSName);
+
+        Map<String, String> env = new HashMap<>();
+        env.put("create", "true");
+        Path path = Paths.get(outputDirectory + GTFSName);
+        URI uri = URI.create("jar:" + path.toUri());
         StringBuilder sb = new StringBuilder();
-        ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file));
-
         sb.append(String.join("\n", entities));
-        ZipEntry entry = new ZipEntry(fileName);
-        outputStream.putNextEntry(entry);
-        byte[] data = sb.toString().getBytes();
-        outputStream.write(data, 0, data.length);
-        outputStream.closeEntry();
 
-        outputStream.close();
+        try (FileSystem fs = FileSystems.newFileSystem(uri, env)) {
+            Path nf = fs.getPath(fileName);
+            try (BufferedWriter writer = Files.newBufferedWriter(nf, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+                writer.write(sb.toString());
+            }
+        }
     }
 }

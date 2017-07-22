@@ -3,6 +3,7 @@ import writers.Writer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class Main {
      * and calls inputReader.
      *@param args
      */
-    public static void main(String[] args) throws IllegalAccessException {
+    public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         Converter converter;
         Map arguments = new HashMap();
         File mainDirectory;

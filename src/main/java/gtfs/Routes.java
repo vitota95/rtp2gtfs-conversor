@@ -5,20 +5,17 @@ import rtp.entities.Linia;
 import rtp.entities.RTPentity;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Routes extends GTFSEntity {
-    RoutesParams params;
-
-    Routes(String header) {
-        super(header);
-        params = new RoutesParams();
-    }
+    private RoutesParams params = new RoutesParams();
+    private static final List<String> header = GtfsCsvHeaders.CLASS_ROUTES;
 
     @Override
-    void getEntityParameters(String key, RTPentity value) {
+    void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
         try {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_LINIA)) {
                 Linia linia = (Linia) value;
@@ -28,6 +25,7 @@ public class Routes extends GTFSEntity {
                 params.route_short_name = linia.getLinia_nom_curt();
                 params.route_long_name = linia.getLinia_nom_curt();
                 params.route_desc = linia.getLinia_desc();
+                setGtfsValues(params);
             } else {
                 throw new IOException("Routes unknown parameter: " + key);
             }
@@ -35,6 +33,11 @@ public class Routes extends GTFSEntity {
             io.printStackTrace();
         }
 
+    }
+
+    @Override
+    List<String> getHeader() {
+        return header;
     }
 }
 
@@ -45,7 +48,7 @@ class RoutesParams
     public String route_long_name;
     public String route_desc;
     public String agency_id;
-    public String route_type;
+    public static final String route_type = "3";
     public static final String route_url = "";
     public static final String route_color = "";
     public static final String route_text_color = "";

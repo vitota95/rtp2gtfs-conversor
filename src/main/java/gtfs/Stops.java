@@ -8,41 +8,28 @@ import rtp.entities.Parada;
 import rtp.entities.RTPentity;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Stops extends GTFSEntity {
 
-    private String stop_id;
-    private String stop_code;
-    private String stop_name;
-    static final String stop_desc = "";
-    private String stop_lat;
-    private String stop_lon;
-    static final String zone_id = "";
-    static final String stop_url = "";
-    static final String location_type = "";
-    static final String parent_station = "";
-    static final String stop_timezone = "Europe/Madrid";
-    static final String wheelchair_boarding = "";
-
-    Stops(String header) {
-        super(header);
-    }
+    private static final List<String> header = GtfsCsvHeaders.CLASS_STOPS;
+    private final StopParams params = new StopParams();
 
     @Override
     void getEntityParameters(String key, RTPentity value) {
         try {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_PARADA)) {
                 final Parada parada = (Parada) value;
-                stop_id = parada.getParada_punt_id();
-                stop_code = parada.getParada_id();
+                params.stop_id = parada.getParada_punt_id();
+                params.stop_code = parada.getParada_id();
                 try {
                     double[] coordinates = UTM2WGS.transEd50Wgs84(Double.parseDouble(parada.getCoord_x()),
                             Double.parseDouble(parada.getCoord_y()));
-                    stop_lat = String.valueOf(coordinates[0]);
-                    stop_lon = String.valueOf(coordinates[1]);
+                    params.stop_lat = String.valueOf(coordinates[0]);
+                    params.stop_lon = String.valueOf(coordinates[1]);
                 } catch (FactoryException | TransformException e) {
                     e.printStackTrace();
                 }
@@ -54,4 +41,24 @@ public class Stops extends GTFSEntity {
         }
     }
 
+    @Override
+    List<String> getHeader() {
+        return header;
+    }
+
+}
+
+class StopParams {
+    String stop_id;
+    String stop_code;
+    String stop_name;
+    static final String stop_desc = "";
+    String stop_lat;
+    String stop_lon;
+    static final String zone_id = "";
+    static final String stop_url = "";
+    static final String location_type = "";
+    static final String parent_station = "";
+    static final String stop_timezone = "Europe/Madrid";
+    static final String wheelchair_boarding = "";
 }

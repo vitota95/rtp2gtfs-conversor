@@ -5,19 +5,14 @@ import rtp.entities.Operador;
 import rtp.entities.RTPentity;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Agency extends GTFSEntity {
-    private AgencyParams agencyParams;
-
-    public Agency(String header) {
-        super(header);
-        agencyParams = new AgencyParams();
-    }
+    private final AgencyParams agencyParams = new AgencyParams();
+    private static final List<String> header = GtfsCsvHeaders.CLASS_AGENCY;
 
     @Override
     void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
@@ -33,7 +28,11 @@ public class Agency extends GTFSEntity {
         } catch (IOException io) {
             io.printStackTrace();
         }
+    }
 
+    @Override
+    List<String> getHeader() {
+        return header;
     }
 }
 

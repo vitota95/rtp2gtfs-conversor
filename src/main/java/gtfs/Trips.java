@@ -5,44 +5,53 @@ import rtp.entities.Expedicio;
 import rtp.entities.RTPentity;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by javig on 03/07/2017.
  */
 public class Trips extends GTFSEntity {
 
-    String service_id;
-    String trip_id;
-    String route_id;
-    String direction_id;
-    String bikes_allowed;
-    String wheelchair_accesible;
-    static final String trip_headsign = "";
-    static final String trip_shortname = "";
-    static final String block_id = "";
-    static final String shape_id = "";
-
-    Trips(String header) {
-        super(header);
-    }
+    private static final List<String> header = GtfsCsvHeaders.CLASS_TRIPS;
+    private final TripsParams params = new TripsParams();
 
     @Override
-    void getEntityParameters(String key, RTPentity value) {
+    void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
         try {
             switch (key) {
                 case RTPClassNames.CLASS_EXPEDICIO:
                     Expedicio expedicio = (Expedicio) value;
-                    trip_id = expedicio.getExpedicio_id();
-                    route_id = expedicio.getLinia_id();
-                    direction_id = expedicio.getDireccio_id();
-                    bikes_allowed = Integer.toString(expedicio.getBicicleta_SN().compareToIgnoreCase("S"));
+                    params.service_id = expedicio.getPeriode_id();
+                    params.trip_id = expedicio.getExpedicio_id();
+                    params.route_id = expedicio.getLinia_id();
+                    //params.bikes_allowed = Integer.toString(expedicio.getBicicleta_SN().compareToIgnoreCase("S"));
+                    params.direction_id = (expedicio.getDireccio_id().equals("1")) ? "0" : "1";
+                    setGtfsValues(params);
                     // TODO set wheelchair accesible
                     break;
                 default:
-                    throw new IOException("Agency unknown parameter: " + key);
+                    throw new IOException("Trips unknown parameter: " + key);
             }
         } catch (IOException io) {
             io.printStackTrace();
         }
     }
+
+    @Override
+    List<String> getHeader() {
+        return header;
+    }
+
+}
+
+class TripsParams {
+    String service_id;
+    String trip_id;
+    String route_id;
+    String direction_id;
+    static final String wheelchair_accessible = "";
+    static final String trip_headsign = "";
+    static final String trip_short_name = "";
+    static final String block_id = "";
+    static final String shape_id = "";
 }

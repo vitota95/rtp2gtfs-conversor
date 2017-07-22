@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by javig on 03/07/2017.
@@ -16,21 +17,8 @@ import java.util.Date;
 
 public class Calendar extends GTFSEntity {
 
-    private String service_id;
-    private String start_date;
-    private String end_date;
-    private String monday;
-    private String tuesday;
-    private String wednesday;
-    private String thursday;
-    private String friday;
-    private String saturday;
-    private String sunday;
-
-    Calendar(String header){
-        super(header);
-    }
-
+    private static final List<String> header = GtfsCsvHeaders.CLASS_CALENDAR;
+    private final CalendarParams params = new CalendarParams();
 
     @Override
     void getEntityParameters(String key, RTPentity value) {
@@ -38,9 +26,9 @@ public class Calendar extends GTFSEntity {
             switch (key) {
                 case RTPClassNames.CLASS_PERIODE:
                     Periode periode = (Periode) value;
-                    service_id = periode.getPeriode_id();
-                    start_date = periode.getPeriode_dinici();
-                    end_date = periode.getPeriode_dfi();
+                    params.service_id = periode.getPeriode_id();
+                    params.start_date = periode.getPeriode_dinici();
+                    params.end_date = periode.getPeriode_dfi();
                     break;
                 case RTPClassNames.CLASS_RESTRICCIO:
                     Restriccio restriccio = (Restriccio) value;
@@ -50,7 +38,7 @@ public class Calendar extends GTFSEntity {
 
                     SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
                     try {
-                        Date date = format.parse(start_date);
+                        Date date = format.parse(params.start_date);
                         c.setTime(date);
                         int dayOfWeek = c.get(java.util.Calendar.DAY_OF_WEEK);
                         int firstMonday = (dayOfWeek == 0) ? 0 : (7 - dayOfWeek);
@@ -70,13 +58,13 @@ public class Calendar extends GTFSEntity {
 
                             if (pattern1.equals(pattern2)) {
                                 //Change binary logic
-                                monday = String.valueOf(pattern1.charAt(0) ^ 1);
-                                tuesday = String.valueOf(pattern1.charAt(1) ^ 1);
-                                wednesday = String.valueOf(pattern1.charAt(2) ^ 1);
-                                thursday = String.valueOf(pattern1.charAt(3) ^ 1);
-                                friday = String.valueOf(pattern1.charAt(4) ^ 1);
-                                saturday = String.valueOf(pattern1.charAt(5) ^ 1);
-                                sunday = String.valueOf(pattern1.charAt(6) ^ 1);
+                                params.monday = String.valueOf(pattern1.charAt(0) ^ 1);
+                                params.tuesday = String.valueOf(pattern1.charAt(1) ^ 1);
+                                params.wednesday = String.valueOf(pattern1.charAt(2) ^ 1);
+                                params.thursday = String.valueOf(pattern1.charAt(3) ^ 1);
+                                params.friday = String.valueOf(pattern1.charAt(4) ^ 1);
+                                params.saturday = String.valueOf(pattern1.charAt(5) ^ 1);
+                                params.sunday = String.valueOf(pattern1.charAt(6) ^ 1);
                             }
                         }
                     } catch (ParseException e) {
@@ -89,4 +77,22 @@ public class Calendar extends GTFSEntity {
             io.printStackTrace();
         }
     }
+
+    @Override
+    List<String> getHeader() {
+        return header;
+    }
+}
+
+class CalendarParams {
+    public String service_id;
+    public String start_date;
+    public String end_date;
+    public String monday;
+    public String tuesday;
+    public String wednesday;
+    public String thursday;
+    public String friday;
+    public String saturday;
+    public String sunday;
 }
