@@ -10,7 +10,7 @@ public class Parada extends RTPentity {
     private static final Logger LOGGER = Logger.getLogger( Parada.class.getName() );
 
     private String parada_punt_id;
-    private String parada_punt_desc;
+    private String parada_punt_desc_curta;
     private String coord_x;
     private String parada_id;
 
@@ -22,8 +22,8 @@ public class Parada extends RTPentity {
         return parada_punt_id;
     }
 
-    public String getParada_punt_desc() {
-        return parada_punt_desc;
+    public String getParada_punt_desc_curta() {
+        return parada_punt_desc_curta;
     }
 
     public String getCoord_x() {

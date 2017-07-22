@@ -19,17 +19,19 @@ public class Stops extends GTFSEntity {
     private final StopParams params = new StopParams();
 
     @Override
-    void getEntityParameters(String key, RTPentity value) {
+    void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
         try {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_PARADA)) {
                 final Parada parada = (Parada) value;
                 params.stop_id = parada.getParada_punt_id();
                 params.stop_code = parada.getParada_id();
+                params.stop_name = parada.getParada_punt_desc_curta();
                 try {
                     double[] coordinates = UTM2WGS.transEd50Wgs84(Double.parseDouble(parada.getCoord_x()),
                             Double.parseDouble(parada.getCoord_y()));
                     params.stop_lat = String.valueOf(coordinates[0]);
                     params.stop_lon = String.valueOf(coordinates[1]);
+                    setGtfsValues(params);
                 } catch (FactoryException | TransformException e) {
                     e.printStackTrace();
                 }

@@ -41,9 +41,10 @@ class Converter {
     }
 
     boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException {
-        setGtfs(Agency.class, GTFSClassNames.CLASS_AGENCY, RTPClassNames.CLASS_OPERADOR);
-        setGtfs(Trips.class, GTFSClassNames.CLASS_TRIPS, RTPClassNames.CLASS_EXPEDICIO);
-        setGtfs(Routes.class, GTFSClassNames.CLASS_ROUTES, RTPClassNames.CLASS_LINIA);
+        setGtfs(Agency.class, GTFSClassNames.CLASS_AGENCY, RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
+        setGtfs(Trips.class, GTFSClassNames.CLASS_TRIPS, RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
+        setGtfs(Routes.class, GTFSClassNames.CLASS_ROUTES, RTPClassNames.CLASS_LINIA, GtfsCsvHeaders.CLASS_ROUTES_CSV);
+        setGtfs(Stops.class, GTFSClassNames.CLASS_STOPS, RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
         writeGTFSFile();
 
         if (checkRTPEntities()) {
@@ -94,7 +95,7 @@ class Converter {
     }
 
 
-    private void setGtfs(Class cl, String gtfsFileName, String rtpClass) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    private void setGtfs(Class cl, String gtfsFileName, String rtpClass, String gtfsHeader) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         ArrayList<RTPentity> rtPentities = RTPentitiesMap.get(rtpClass);
         ArrayList<String> csv = new ArrayList<>();
 
@@ -103,7 +104,7 @@ class Converter {
         Object object = ctor.newInstance();
         GTFSEntity entity = (GTFSEntity) object;
 
-        csv.add(GtfsCsvHeaders.CLASS_ROUTES_CSV);
+        csv.add(gtfsHeader);
         for (RTPentity rtPentity : rtPentities) {
             Map<String, RTPentity> mapParameters = new HashMap<>();
             GTFSParameters rtpValues = new GTFSParameters();
