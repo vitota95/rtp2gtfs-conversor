@@ -21,6 +21,11 @@ public class Calendar extends GTFSEntity {
     private final CalendarParams params = new CalendarParams();
 
     @Override
+    Object getGtfsValues() {
+        return null;
+    }
+
+    @Override
     void getEntityParameters(String key, RTPentity value) {
         try {
             switch (key) {

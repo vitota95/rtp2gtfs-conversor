@@ -16,12 +16,13 @@ public interface RTPClassNames {
     String CLASS_VEHICLE = "Vehicle";
     String CLASS_TEMPS_ITINERARI = "TempsItinerari";
     String CLASS_TRAJECTE = "Trajecte";
+    String CLASS_GRUP_HORARI = "GrupHorari";
 
     /**
      * Created by javig on 07/07/2017.
      */
     interface MandatoryRTPEntities {
         String[] files = {CLASS_VERSIO, CLASS_OPERADOR, CLASS_PARADA, CLASS_LINIA,
-        CLASS_EXPEDICIO, CLASS_PERIODE, CLASS_ITINERARI, CLASS_TEMPS_ITINERARI, CLASS_TRAJECTE};
+                CLASS_EXPEDICIO, CLASS_PERIODE, CLASS_ITINERARI, CLASS_TEMPS_ITINERARI, CLASS_TRAJECTE, CLASS_GRUP_HORARI};
     }
 }

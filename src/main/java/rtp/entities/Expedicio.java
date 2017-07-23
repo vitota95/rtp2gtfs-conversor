@@ -1,6 +1,7 @@
 package rtp.entities;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 /**
@@ -18,6 +19,13 @@ public class Expedicio extends RTPentity {
     private String tipus_vehicle_id;
     private String grup_horari_id;
     private String bicicleta_SN;
+    private String sortida_hora;
+    private static final String timeFormat = "HH:mm:ss";
+
+    public String getSortida_hora() throws ParseException {
+
+        return sortida_hora;
+    }
 
     public String getBicicleta_SN() {
         return bicicleta_SN;

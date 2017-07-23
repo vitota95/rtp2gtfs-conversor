@@ -15,4 +15,5 @@ public interface FileNames {
     String FILE_RTP_VEHICLE = "tipus_vehicle.rtp";
     String FILE_RTP_TEMPS_ITINERARI = "temps_itinerari.rtp";
     String FILE_RTP_TRAJECTE = "trajecte.rtp";
+    String FILE_RTP_GRUP_HORARI = "grup_horari.rtp";
 }

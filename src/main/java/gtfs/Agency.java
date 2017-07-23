@@ -11,17 +11,21 @@ import java.util.List;
  * Created by javig on 03/07/2017.
  */
 public class Agency extends GTFSEntity {
-    private final AgencyParams agencyParams = new AgencyParams();
     private static final List<String> header = GtfsCsvHeaders.CLASS_AGENCY;
+    private static final AgencyValues agencyValues = new AgencyValues();
+
+    @Override
+    Object getGtfsValues() {
+        return agencyValues;
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
         try {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_OPERADOR)) {
                 final Operador operador = (Operador) value;
-                agencyParams.agency_id = operador.getOperador_id();
-                agencyParams.agency_name = operador.getOperador_nom_complet_public();
-                setGtfsValues(agencyParams);
+                agencyValues.agency_id = operador.getOperador_id();
+                agencyValues.agency_name = operador.getOperador_nom_complet_public();
             } else {
                 throw new IOException("Agency unknown parameter: " + key);
             }
@@ -30,13 +34,14 @@ public class Agency extends GTFSEntity {
         }
     }
 
+
     @Override
     List<String> getHeader() {
         return header;
     }
 }
 
-class AgencyParams
+class AgencyValues
 {
     String agency_name;
     String agency_id;

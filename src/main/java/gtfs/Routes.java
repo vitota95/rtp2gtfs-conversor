@@ -11,8 +11,13 @@ import java.util.List;
  * Created by javig on 03/07/2017.
  */
 public class Routes extends GTFSEntity {
-    private RoutesParams params = new RoutesParams();
+    private RoutesValues routesValues = new RoutesValues();
     private static final List<String> header = GtfsCsvHeaders.CLASS_ROUTES;
+
+    @Override
+    Object getGtfsValues() {
+        return routesValues;
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
@@ -20,12 +25,11 @@ public class Routes extends GTFSEntity {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_LINIA)) {
                 Linia linia = (Linia) value;
 
-                params.route_id = linia.getLinia_id();
-                params.agency_id = linia.getOperador_id();
-                params.route_short_name = linia.getLinia_nom_curt();
-                params.route_long_name = linia.getLinia_nom_curt();
-                params.route_desc = linia.getLinia_desc();
-                setGtfsValues(params);
+                routesValues.route_id = linia.getLinia_id();
+                routesValues.agency_id = linia.getOperador_id();
+                routesValues.route_short_name = linia.getLinia_nom_curt();
+                routesValues.route_long_name = linia.getLinia_nom_curt();
+                routesValues.route_desc = linia.getLinia_desc();
             } else {
                 throw new IOException("Routes unknown parameter: " + key);
             }
@@ -41,7 +45,7 @@ public class Routes extends GTFSEntity {
     }
 }
 
-class RoutesParams
+class RoutesValues
 {
     public String route_id;
     public String route_short_name;

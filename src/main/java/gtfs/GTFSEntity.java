@@ -51,6 +51,7 @@ abstract public class GTFSEntity {
                 e.printStackTrace();
             }
         });
+        setGtfsValues(this.getGtfsValues());
     }
 
     void setGtfsValues(Object params) throws IllegalAccessException {
@@ -64,7 +65,8 @@ abstract public class GTFSEntity {
     }
 
     abstract void getEntityParameters(String key, RTPentity value) throws IllegalAccessException;
-
     abstract List<String> getHeader();
+
+    abstract Object getGtfsValues();
 }
 

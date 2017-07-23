@@ -91,6 +91,9 @@ public class InputReader {
                     case FileNames.FILE_RTP_VERSIO:
                         this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_VERSIO);
                         break;
+                    case FileNames.FILE_RTP_GRUP_HORARI:
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_GRUP_HORARI);
+                        break;
                     default:
                         break;
                 }

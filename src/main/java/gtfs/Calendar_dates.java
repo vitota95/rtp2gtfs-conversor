@@ -20,6 +20,11 @@ public class Calendar_dates extends GTFSEntity {
     }
 
     @Override
+    Object getGtfsValues() {
+        return null;
+    }
+
+    @Override
     List<String> getHeader() {
         return header;
     }

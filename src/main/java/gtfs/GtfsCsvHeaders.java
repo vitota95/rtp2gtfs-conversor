@@ -12,7 +12,7 @@ public interface GtfsCsvHeaders {
     String CLASS_CALENDAR_CSV = "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date";
     String CLASS_CALENDAR_DATES_CSV = "service_id,date,exception_type";
     String CLASS_ROUTES_CSV = "route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color";
-    String CLASS_STOP_TIMES_CSV = "trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type";
+    String CLASS_STOP_TIMES_CSV = "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled";
     String CLASS_STOPS_CSV = "stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station,stop_timezone,wheelchair_boarding";
     String CLASS_TRIPS_CSV = "route_id,service_id,trip_id,trip_headsign,block_id,trip_short_name,direction_id,shape_id,wheelchair_accessible";
 
@@ -20,7 +20,7 @@ public interface GtfsCsvHeaders {
     List<String> CLASS_CALENDAR = new ArrayList<>(Arrays.asList("service_id", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "start_date", "end_date"));
     List<String> CLASS_CALENDAR_DATES = new ArrayList<>(Arrays.asList("service_id", "date", "exception_type"));
     List<String> CLASS_ROUTES = new ArrayList<>(Arrays.asList("route_id", "agency_id", "route_short_name", "route_long_name", "route_desc", "route_type", "route_url", "route_color", "route_text_color"));
-    List<String> CLASS_STOP_TIMES = new ArrayList<>(Arrays.asList("trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "pickup_type", "drop_off_type"));
+    List<String> CLASS_STOP_TIMES = new ArrayList<>(Arrays.asList("trip_id", "arrival_time", "departure_time", "stop_id", "stop_sequence", "stop_headsign", "pickup_type", "drop_off_type", "shape_dist_traveled"));
     List<String> CLASS_STOPS = new ArrayList<>(Arrays.asList("stop_id", "stop_code", "stop_name", "stop_desc", "stop_lat", "stop_lon", "zone_id", "stop_url", "location_type", "parent_station", "stop_timezone", "wheelchair_boarding"));
     List<String> CLASS_TRIPS = new ArrayList<>(Arrays.asList("route_id", "service_id", "trip_id", "trip_headsign", "block_id", "trip_short_name", "direction_id", "shape_id", "wheelchair_accessible"));
 }

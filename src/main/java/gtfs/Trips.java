@@ -13,7 +13,12 @@ import java.util.List;
 public class Trips extends GTFSEntity {
 
     private static final List<String> header = GtfsCsvHeaders.CLASS_TRIPS;
-    private final TripsParams params = new TripsParams();
+    private final TripValues tripValues = new TripValues();
+
+    @Override
+    Object getGtfsValues() {
+        return tripValues;
+    }
 
     @Override
     void getEntityParameters(String key, RTPentity value) throws IllegalAccessException {
@@ -21,12 +26,11 @@ public class Trips extends GTFSEntity {
             switch (key) {
                 case RTPClassNames.CLASS_EXPEDICIO:
                     Expedicio expedicio = (Expedicio) value;
-                    params.service_id = expedicio.getPeriode_id();
-                    params.trip_id = expedicio.getExpedicio_id();
-                    params.route_id = expedicio.getLinia_id();
+                    tripValues.service_id = expedicio.getPeriode_id();
+                    tripValues.trip_id = expedicio.getExpedicio_id();
+                    tripValues.route_id = expedicio.getLinia_id();
                     //params.bikes_allowed = Integer.toString(expedicio.getBicicleta_SN().compareToIgnoreCase("S"));
-                    params.direction_id = (expedicio.getDireccio_id().equals("1")) ? "0" : "1";
-                    setGtfsValues(params);
+                    tripValues.direction_id = (expedicio.getDireccio_id().equals("1")) ? "0" : "1";
                     // TODO set wheelchair accesible
                     break;
                 default:
@@ -44,7 +48,7 @@ public class Trips extends GTFSEntity {
 
 }
 
-class TripsParams {
+class TripValues {
     String service_id;
     String trip_id;
     String route_id;
