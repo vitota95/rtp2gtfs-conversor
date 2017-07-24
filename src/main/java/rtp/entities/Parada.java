@@ -12,6 +12,7 @@ public class Parada extends RTPentity {
     private String parada_punt_id;
     private String parada_punt_desc_curta;
     private String coord_x;
+    private String coord_y;
     private String parada_id;
 
     public String getParada_id() {
@@ -34,8 +35,6 @@ public class Parada extends RTPentity {
 
         return coord_y;
     }
-
-    private String coord_y;
 
     public Parada(String val, String h)  throws IOException{
         super(val, h);

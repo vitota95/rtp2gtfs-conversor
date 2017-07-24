@@ -3,6 +3,7 @@ package gtfs;
 import rtp.entities.RTPentity;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

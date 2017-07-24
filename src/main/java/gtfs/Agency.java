@@ -47,7 +47,7 @@ class AgencyValues
     String agency_id;
     static final String agency_url = "https://www.changeURL.notreal";
     static final String agency_timezone = "Europe/Madrid";
-    static final String agency_lang = "cat";
+    static final String agency_lang = "es";
     static final String agency_phone = "";
     static final String agency_fare_url = "";
 }

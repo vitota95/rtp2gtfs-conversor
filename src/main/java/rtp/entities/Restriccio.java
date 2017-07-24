@@ -12,6 +12,10 @@ public class Restriccio extends RTPentity {
     private String restriccio_id;
     private String dies;
 
+    public void setDies(String dies) {
+        this.dies = dies;
+    }
+
     public String getPeriode_id() {
         return periode_id;
     }

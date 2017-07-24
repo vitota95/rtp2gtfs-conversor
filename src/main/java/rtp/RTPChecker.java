@@ -17,23 +17,37 @@ public class RTPChecker {
     private List<String> entityKeys;
     private List<String> mandatoryFiles;
 
-    @SuppressWarnings("unchecked")
+
     public RTPChecker(Map entities){
         entityKeys = new ArrayList<>(entities.keySet());
-        mandatoryFiles = Arrays.asList(RTPClassNames.MandatoryRTPEntities.files);
+        mandatoryFiles = Arrays.asList(RTPClassNames.MandatoryRTPEntities.filesMandatory);
     }
 
     public boolean checkRTPMap(){
 
         if (entityKeys.containsAll(mandatoryFiles)){
-            LOGGER.info("All mandatory files were read");
-            return true;
+
+            if (isHoresDepasPresent()){
+                LOGGER.info("All mandatory files were read, using hores de pas to calculate stop_times");
+                return true;
+            }
+            if (isTempsitinerari_GrupHorariPresent()) {
+                LOGGER.info("All mandatory files were read, using grup horari and temps itinerari " +
+                        "to calculate stop_times");
+                return true;
+            }
+
         }
         else {
             LOGGER.log(Level.SEVERE, "Some mandatory files are missing");
-            return false;
         }
+        return false;
     }
+
+    public boolean isTempsitinerari_GrupHorariPresent() { return entityKeys.containsAll
+            (Arrays.asList(RTPClassNames.MandatoryRTPEntities.tempsItinerari_GrupHorari));}
+
+    public boolean isHoresDepasPresent(){ return  entityKeys.contains(RTPClassNames.MandatoryRTPEntities.horesDePas);}
 
     public boolean isRestriccioPresent(){
         return entityKeys.contains(RTPClassNames.CLASS_RESTRICCIO);
