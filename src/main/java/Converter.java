@@ -208,11 +208,6 @@ class Converter {
 
                 Stream<TempsItinerari> tempsItinerariStream = Arrays.stream(tempsItineraris)
                         .filter(x -> x.getGrup_horari_id().equalsIgnoreCase(grupHorari.getGrup_horari_id()));
-                //TODO groupby sequencia_id and use index to set stop orders
-//                Map<String, List<TempsItinerari>> tempsItinerariGrouped =
-//                        tempsItinerariStream.collect(Collectors.groupingBy(x -> x.getSequencia_id() ));
-//                //                TempsItinerari[] tempsItinerariFiltered = new TempsItinerari[tempsItinerariGrouped.values().size()];
-////                tempsItinerariFiltered = tempsItinerariGrouped.values().toArray(tempsItinerariFiltered);
 
                 TempsItinerari[] tempsItinerariFiltered = tempsItinerariStream.toArray(TempsItinerari[]::new);
                 Stream<Itinerari> itinerariStream = Arrays.stream(itineraris)
@@ -220,24 +215,24 @@ class Converter {
 
                 Itinerari[] itinerariFiltered = itinerariStream.toArray(Itinerari[]::new);
 
-                tempsItinerariFiltered[0].setAccumulatedTime("0");
                 int index = 0;
-                int actualIndex = -1;
+                int stopNumber = 0;
 
                 for (Itinerari itinerari : itinerariFiltered) {
                     Map<String, RTPentity> mapParameters = new HashMap<>();
                     GTFSParameters rtpValues = new GTFSParameters();
 
                     // Prevent negative RTP values
-                    actualIndex++;
                     if (Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) < 0) {
+                        index++;
                         continue;
                     }
+                    stopNumber++;
 
                     if (index > 0) {
-                        int time = Integer.parseInt(tempsItinerariFiltered[actualIndex].getTemps_viatge()) +
+                        int time = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) +
                                 Integer.parseInt(tempsItinerariFiltered[index - 1].getAcummulatedTime());
-                        tempsItinerariFiltered[actualIndex].setAccumulatedTime(String.valueOf(time));
+                        tempsItinerariFiltered[index].setAccumulatedTime(String.valueOf(time));
                     } else {
                         int time = 0;
                         try {
@@ -274,10 +269,6 @@ class Converter {
         for (ArrayList arrayList : csvParallel) {
             csv.addAll(arrayList);
         }
-
-//        for (GrupHorari grupHorari : grupHoraris){
-//
-//            }
 
         addToEntitiesMap(gtfsFileName, csv);
     }

@@ -16,7 +16,7 @@ public class TempsItinerari extends RTPentity {
     private String temps_viatge;
     private String temps_parat;
     private String grup_horari_id;
-    private String acumulatedTime;
+    private String acumulatedTime = "0";
     private static final String timeFormat = "HH:mm:ss";
     private static final int SECONDS_IN_A_DAY = 86400;
     private static final int HOURS_IN_A_DAY = 24;
