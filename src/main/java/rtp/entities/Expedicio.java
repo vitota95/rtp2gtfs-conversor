@@ -20,7 +20,13 @@ public class Expedicio extends RTPentity {
     private String grup_horari_id;
     private String bicicleta_SN;
     private String sortida_hora;
+    private String dia_atribut_id;
+
     private static final String timeFormat = "HH:mm:ss";
+
+    public String getDia_atribut_id() {
+        return dia_atribut_id;
+    }
 
     public String getSortida_hora() throws ParseException {
 
@@ -61,6 +67,6 @@ public class Expedicio extends RTPentity {
 
     public Expedicio(String val, String h) throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 }

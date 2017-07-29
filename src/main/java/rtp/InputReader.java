@@ -97,6 +97,15 @@ public class InputReader {
                     case FileNames.FILE_RTP_HORES_DE_PAS:
                         this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_HORES_DE_PAS);
                         break;
+                    case FileNames.FILE_RTP_DIA_ATRIBUT:
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_DIA_ATRIBUT);
+                        break;
+                    case FileNames.FILE_RTP_TIPUS_DIA:
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TIPUS_DIA);
+                        break;
+                    case FileNames.FILE_RTP_TIPUS_DIA_2_DIA_ATRIBUT:
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT);
+                        break;
                     default:
                         break;
                 }

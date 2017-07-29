@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +30,7 @@ public class Writer  {
     }
 
     //Source: https://stackoverflow.com/questions/2223434/appending-files-to-a-zip-file-with-java
-    public void write(String fileName, ArrayList<String> entities, String outputDirectory) throws IOException {
+    public void write(String fileName, List entities, String outputDirectory) throws IOException {
 
         Map<String, String> env = new HashMap<>();
         env.put("create", "true");

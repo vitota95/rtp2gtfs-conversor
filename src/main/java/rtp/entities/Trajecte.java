@@ -13,7 +13,7 @@ public class Trajecte extends RTPentity {
 
     public Trajecte(String val, String h) throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 
     public String getLinia_id() {

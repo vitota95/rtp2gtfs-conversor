@@ -28,9 +28,13 @@ class Converter {
     private RTPChecker checker;
     private String outputDirectory;
     private HashMap<String, ArrayList> RTPentitiesMap;
-    private HashMap<String, ArrayList> GTFSentitiesMap;
+    private HashMap<String, List> GTFSentitiesMap;
 
-
+    /**
+     * @param dir input RTP File
+     * @param od  output directory of the GTFS file
+     * @throws IOException
+     */
     Converter(File dir, String od) throws IOException {
         iReader = new InputReader(dir);
         RTPentitiesMap = iReader.getEntities();
@@ -39,7 +43,19 @@ class Converter {
         GTFSentitiesMap = new HashMap<>();
     }
 
-    boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException {
+    /**
+     * Main method of Converter, it calls the methods which perform
+     * the RTP - GTFS conversion by generating the GTFS classes
+     *
+     * @return boolean with conversion result
+     * @throws IOException
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InstantiationException
+     * @throws InvocationTargetException
+     * @throws ParseException
+     */
+    boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException, ClassNotFoundException {
         if (checkRTPEntities()) {
             setGtfsFilesWithSimpleConversion(Agency.class, GTFSClassNames.CLASS_AGENCY,
                     RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
@@ -50,12 +66,12 @@ class Converter {
             setGtfsFilesWithSimpleConversion(Stops.class, GTFSClassNames.CLASS_STOPS,
                     RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
             if (checker.isTempsitinerari_GrupHorariPresent()){
-                //setStopTimes(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+                setStopTimesWithGrupHorari(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
             }
             else{
                 setStopTimesWithHoresDePas(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
             }
-            setCalendars(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+            //setCalendarWithTipusDia(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
 
             writeGTFSFile();
             return true;
@@ -63,10 +79,18 @@ class Converter {
         return false;
     }
 
+    /**
+     * Checks if all mandatory RTP files are present in the RTP zip
+     * if not the conversion can't be made.
+     * It checks too which optional files are present.
+     *
+     * @return
+     */
+
     boolean checkRTPEntities() {
         try {
             if (!checker.checkRTPMap()) {
-                LOGGER.log(Level.SEVERE, "Cannot do conversion, some mandatory files not present");
+                LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
                 throw new IOException("Conversion not possible");
             }
 
@@ -86,7 +110,15 @@ class Converter {
         return false;
     }
 
-    private void addToEntitiesMap(String key, ArrayList<String> entityCSV) {
+    /**
+     * Adds csv file String and key to a map, the key is the GTFS file name
+     * which will be written by the file writer at the end.
+     *
+     * @param key
+     * @param entityCSV
+     */
+
+    private void addToEntitiesMap(String key, List entityCSV) {
         GTFSentitiesMap.put(key, entityCSV);
     }
 
@@ -103,12 +135,30 @@ class Converter {
 
     }
 
-    private void setGtfsFilesWithSimpleConversion(Class cl, String gtfsFileName, String rtpClass, String gtfsHeader) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+    /**
+     * Standard method to set simple GTFS files, this files
+     * only need a RTP file to direct conversion.
+     *
+     * @param gtfsClass class created
+     * @param gtfsFileName name of the GTFS file created
+     * @param rtpClass name of the RTP class needed
+     * @param gtfsHeader header of the GTFS class
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     */
+
+    private void setGtfsFilesWithSimpleConversion(Class gtfsClass, String gtfsFileName, String rtpClass, String gtfsHeader)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
+            InstantiationException, ClassNotFoundException {
+
         ArrayList<RTPentity> rtPentities = RTPentitiesMap.get(rtpClass);
         ArrayList<String> csv = new ArrayList<>();
 
         //Get GTFS object by reflection
-        Constructor<?> ctor = cl.getConstructor();
+        Constructor<?> ctor = gtfsClass.getConstructor();
         Object object = ctor.newInstance();
         GTFSEntity entity = (GTFSEntity) object;
 
@@ -123,73 +173,127 @@ class Converter {
         addToEntitiesMap(gtfsFileName, csv);
     }
 
-//    private void setStopTimes(String gtfsFileName, String gtfsHeader) throws IllegalAccessException, ParseException {
-//        ArrayList<Expedicio> exps = RTPentitiesMap.get(RTPClassNames.CLASS_EXPEDICIO);
-//        Expedicio[] expedicios = exps.toArray(new Expedicio[exps.size()]);
-//        ArrayList<Itinerari> its = RTPentitiesMap.get(RTPClassNames.CLASS_ITINERARI);
-//        Itinerari[] itineraris = its.toArray(new Itinerari[its.size()]);
-//        ArrayList<TempsItinerari> tpi = RTPentitiesMap.get(RTPClassNames.CLASS_TEMPS_ITINERARI);
-//        TempsItinerari[] tempsItineraris = tpi.toArray(new TempsItinerari[tpi.size()]);
-//        ArrayList<GrupHorari> gh = RTPentitiesMap.get(RTPClassNames.CLASS_GRUP_HORARI);
-//        GrupHorari[] grupHoraris = gh.toArray(new GrupHorari[gh.size()]);
-//        ArrayList<String> csv = new ArrayList<>();
-//
-//        csv.add(gtfsHeader);
-//        for (GrupHorari grupHorari : grupHoraris) {
-//
-//            //Source:  https://zeroturnaround.com/rebellabs/java-8-explained-applying-lambdas-to-java-collections/
-//            Optional<Expedicio> expedicioOptional = Arrays.stream(expedicios)
-//                    .filter(x -> x.getGrup_horari_id().equalsIgnoreCase(grupHorari.getGrup_horari_id()))
-//                    .findFirst();
-//
-//            Stream<TempsItinerari> tempsItinerariStream = Arrays.stream(tempsItineraris)
-//                    .filter(x -> x.getGrup_horari_id().equalsIgnoreCase(grupHorari.getGrup_horari_id()));
-//
-//            if (expedicioOptional.isPresent()) {
-//                Expedicio expedicio = expedicioOptional.get();
-//
-//                TempsItinerari[] tempsItinerariFiltered = tempsItinerariStream.toArray(TempsItinerari[]::new);
-//                Stream<Itinerari> itinerariStream = Arrays.stream(itineraris)
-//                        .filter(x -> x.getTrajecte_id().equalsIgnoreCase(expedicio.getTrajecte_id()));
-//
-//                int acumulatedTravelTime = Integer.parseInt(expedicio.getSortida_hora());
-//                Itinerari[] itinerariFiltered = itinerariStream.toArray(Itinerari[]::new);
-//
-//                int index = 0;
-//                for (Itinerari itinerari : itinerariFiltered) {
-//                    Map<String, RTPentity> mapParameters = new HashMap<>();
-//                    GTFSParameters rtpValues = new GTFSParameters();
-//
-//                    int travelTime = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge());
-//                    //TODO ask marc what to do with -3 value
-//                    if (travelTime >= 0) {
-//                        acumulatedTravelTime += travelTime;
-//                        tempsItinerariFiltered[index].setArrival_time(acumulatedTravelTime);
-//                        acumulatedTravelTime += Integer.parseInt(tempsItinerariFiltered[index].getTemps_parat());
-//
-//                        tempsItinerariFiltered[index].setDeparture_time(acumulatedTravelTime);
-//                        mapParameters.put(RTPClassNames.CLASS_EXPEDICIO, expedicio);
-//                        mapParameters.put(RTPClassNames.CLASS_TEMPS_ITINERARI, tempsItinerariFiltered[index]);
-//                        mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerari);
-//                        rtpValues.setRTPobjects(mapParameters);
-//                        Stop_times stop_times = new Stop_times();
-//                        csv.add(stop_times.getCsvString(rtpValues));
-//
-//                    }
-//                    index++;
-//                }
-//            } else {
-//                LOGGER.log(Level.SEVERE, "Couldn't find any expedicio or temps_itinerari with grup_horari "
-//                        + grupHorari.getGrup_horari_id());
-//            }
-//        }
-//        addToEntitiesMap(gtfsFileName, csv);
-//    }
-
-
-
+    /**
+     * If the RTP files contain the grup_horari and temps_itinerari files
+     * we will use this method to get the stopTimes.
+     * @param gtfsFileName name of the GTFS file created
+     * @param gtfsHeader header of the GTFS file created
+     * @throws IllegalAccessException
+     * @throws ParseException
+     */
     @SuppressWarnings("unchecked")
-    private void setStopTimesWithHoresDePas(String gtfsFileName, String gtfsHeader) throws IllegalAccessException {
+    private void setStopTimesWithGrupHorari(String gtfsFileName, String gtfsHeader) throws IllegalAccessException, ParseException {
+        ArrayList<Expedicio> exps = RTPentitiesMap.get(RTPClassNames.CLASS_EXPEDICIO);
+        Expedicio[] expedicios = exps.toArray(new Expedicio[exps.size()]);
+        ArrayList<Itinerari> its = RTPentitiesMap.get(RTPClassNames.CLASS_ITINERARI);
+        Itinerari[] itineraris = its.toArray(new Itinerari[its.size()]);
+        ArrayList<TempsItinerari> tpi = RTPentitiesMap.get(RTPClassNames.CLASS_TEMPS_ITINERARI);
+        TempsItinerari[] tempsItineraris = tpi.toArray(new TempsItinerari[tpi.size()]);
+        ArrayList<GrupHorari> grupHoraris = RTPentitiesMap.get(RTPClassNames.CLASS_GRUP_HORARI);
+
+        ArrayList<String> csv = new ArrayList<>();
+
+        csv.add(gtfsHeader);
+        ArrayList<ArrayList<String>> csvParallel = new ArrayList<>(grupHoraris.size());
+
+        grupHoraris.parallelStream().forEach((GrupHorari grupHorari) -> {
+            ArrayList<String> csvTemp = new ArrayList<>();
+            //Source:  https://zeroturnaround.com/rebellabs/java-8-explained-applying-lambdas-to-java-collections/
+            Stream<Expedicio> expedicioStream = Arrays.stream(expedicios)
+                    .filter(x -> x.getGrup_horari_id().equalsIgnoreCase(grupHorari.getGrup_horari_id()));
+
+            Expedicio[] expedicioFiltered = expedicioStream.toArray(Expedicio[]::new);
+
+            for (Expedicio expedicio : expedicioFiltered) {
+
+                Stream<TempsItinerari> tempsItinerariStream = Arrays.stream(tempsItineraris)
+                        .filter(x -> x.getGrup_horari_id().equalsIgnoreCase(grupHorari.getGrup_horari_id()));
+                //TODO groupby sequencia_id and use index to set stop orders
+//                Map<String, List<TempsItinerari>> tempsItinerariGrouped =
+//                        tempsItinerariStream.collect(Collectors.groupingBy(x -> x.getSequencia_id() ));
+//                //                TempsItinerari[] tempsItinerariFiltered = new TempsItinerari[tempsItinerariGrouped.values().size()];
+////                tempsItinerariFiltered = tempsItinerariGrouped.values().toArray(tempsItinerariFiltered);
+
+                TempsItinerari[] tempsItinerariFiltered = tempsItinerariStream.toArray(TempsItinerari[]::new);
+                Stream<Itinerari> itinerariStream = Arrays.stream(itineraris)
+                        .filter(x -> x.getTrajecte_id().equalsIgnoreCase(expedicio.getTrajecte_id()));
+
+                Itinerari[] itinerariFiltered = itinerariStream.toArray(Itinerari[]::new);
+
+                tempsItinerariFiltered[0].setAccumulatedTime("0");
+                int index = 0;
+                int actualIndex = -1;
+
+                for (Itinerari itinerari : itinerariFiltered) {
+                    Map<String, RTPentity> mapParameters = new HashMap<>();
+                    GTFSParameters rtpValues = new GTFSParameters();
+
+                    // Prevent negative RTP values
+                    actualIndex++;
+                    if (Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) < 0) {
+                        continue;
+                    }
+
+                    if (index > 0) {
+                        int time = Integer.parseInt(tempsItinerariFiltered[actualIndex].getTemps_viatge()) +
+                                Integer.parseInt(tempsItinerariFiltered[index - 1].getAcummulatedTime());
+                        tempsItinerariFiltered[actualIndex].setAccumulatedTime(String.valueOf(time));
+                    } else {
+                        int time = 0;
+                        try {
+                            time = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) +
+                                    Integer.parseInt(expedicio.getSortida_hora());
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        tempsItinerariFiltered[index].setAccumulatedTime(String.valueOf(time));
+                    }
+
+                    mapParameters.put(RTPClassNames.CLASS_EXPEDICIO, expedicio);
+                    mapParameters.put(RTPClassNames.CLASS_TEMPS_ITINERARI, tempsItinerariFiltered[index]);
+                    mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerari);
+                    rtpValues.setRTPobjects(mapParameters);
+                    Stop_times stop_times = new Stop_times();
+                    try {
+                        synchronized (this) {
+                            csvTemp.add(stop_times.getCsvString(rtpValues));
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    index++;
+                }
+            }
+            synchronized (this) {
+                csvParallel.add(csvTemp);
+            }
+        });
+
+        //prevent unordered trip_id in stop_times
+        for (ArrayList arrayList : csvParallel) {
+            csv.addAll(arrayList);
+        }
+
+//        for (GrupHorari grupHorari : grupHoraris){
+//
+//            }
+
+        addToEntitiesMap(gtfsFileName, csv);
+    }
+
+
+    /**
+     * If the RTP files contain HoresDePas we can use this method
+     * to generate StopTimes, with this method is easier and has less
+     * cost, so es preferable.
+     *
+     * @param gtfsFileName Name of the GTFS file generated
+     * @param gtfsHeader   Header of the GTFS file generated
+     * @throws IllegalAccessException
+     */
+    @SuppressWarnings("unchecked")
+    private void setStopTimesWithHoresDePas(String gtfsFileName, String gtfsHeader) {
         ArrayList<Expedicio> expedicios =  RTPentitiesMap.get(RTPClassNames.CLASS_EXPEDICIO);
 
         ArrayList<HoresDePas> hdps = RTPentitiesMap.get(RTPClassNames.CLASS_HORES_DE_PAS);
@@ -202,13 +306,11 @@ class Converter {
         csv.add(gtfsHeader);
 
         for (Expedicio expedicio : expedicios) {
-            Stream<HoresDePas> horesDePasStream = Arrays.stream(horesDePas)
-                    .filter(x -> x.getExpedicio_id().equalsIgnoreCase(expedicio.getExpedicio_id()));
-
-            HoresDePas[] horesDePasFiltered = horesDePasStream.toArray(HoresDePas[]::new);
-
-            for (HoresDePas horaDepas : horesDePasFiltered) {
-                //Get itinerari who match the same linia, trajecte and hora de pas
+            Arrays.stream(horesDePas)
+                    .filter(x -> x.getExpedicio_id()
+                            .equalsIgnoreCase(expedicio.getExpedicio_id()))
+                    .forEach(horaDepas -> {
+                        //Get itinerari which match the same linia, trajecte and hora de pas
                 Optional<Itinerari> itinerariOptional = Arrays.stream(itineraris)
                         .filter(x -> x.getLinia_id().equalsIgnoreCase(expedicio.getLinia_id()))
                         .filter(x -> x.getTrajecte_id().equalsIgnoreCase(expedicio.getTrajecte_id()))
@@ -224,33 +326,58 @@ class Converter {
                     mapParameters.put(RTPClassNames.CLASS_HORES_DE_PAS, horaDepas);
                     rtpValues.setRTPobjects(mapParameters);
                     Stop_times stop_times = new Stop_times();
-                    csv.add(stop_times.getCsvString(rtpValues));
+                    try {
+                        csv.add(stop_times.getCsvString(rtpValues));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
+                    });
         }
         addToEntitiesMap(gtfsFileName, csv);
     }
 
-    private void setCalendars(String gtfsFileName, String gtfsHeader) throws IllegalAccessException, IOException {
-        ArrayList<Restriccio> restriccios;
-        ArrayList<Periode> periodes = RTPentitiesMap.get(RTPClassNames.CLASS_PERIODE);
-        ArrayList<String> csv = new ArrayList<>();
-        Calendar calendar = new Calendar();
+    /**
+     * If we have several tipus_dias we can generate a calendar we that
+     * if not we have to use restriccio RTP file and if they are not present,
+     * we only can generate a generic calendar, with all days set to true
+     * and no restrictions.
+     *
+     * @param gtfsFileName Name of the GTFS file
+     * @param gtfsHeader   GTFS header of this file
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
 
+    @SuppressWarnings("unchecked")
+    private void setCalendarWithTipusDia(String gtfsFileName, String gtfsHeader) throws IllegalAccessException, IOException {
+        ArrayList<TipusDia> td = RTPentitiesMap.get(RTPClassNames.CLASS_TIPUS_DIA);
+        ArrayList<Periode> periodes = RTPentitiesMap.get(RTPClassNames.CLASS_PERIODE);
+        TipusDia[] tipusDias = td.toArray(new TipusDia[td.size()]);
+        ArrayList<TipusDia2DiaAtribut> td2da = RTPentitiesMap.get(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT);
+        TipusDia2DiaAtribut[] tipusDia2DiaAtributs = td2da.toArray(new TipusDia2DiaAtribut[td2da.size()]);
+        ArrayList<DiaAtribut> diaAtributs = RTPentitiesMap.get(RTPClassNames.CLASS_DIA_ATRIBUT);
+
+        ArrayList<String> csv = new ArrayList<>();
         csv.add(gtfsHeader);
-        if (checker.isRestriccioPresent()){
-            restriccios = RTPentitiesMap.get(RTPClassNames.CLASS_RESTRICCIO);
-        }
-        else {
-            //Create dummy object
-            Restriccio restriccio = new Restriccio("","");
-            restriccio.setDies("000000000000000000000");
-            Map<String, RTPentity> mapParameters = new HashMap<>();
+
+        Periode[] p = new Periode[1];
+        p[0] = periodes.get(0);
+
+        for (DiaAtribut diaAtribut : diaAtributs) {
+            Map<String, RTPentity[]> mapParameters = new HashMap<>();
             GTFSParameters rtpValues = new GTFSParameters();
-            mapParameters.put(RTPClassNames.CLASS_PERIODE, periodes.get(0));
-            mapParameters.put(RTPClassNames.CLASS_RESTRICCIO, restriccio);
-            rtpValues.setRTPobjects(mapParameters);
-            csv.add(calendar.getCsvString(rtpValues));
+            DiaAtribut[] diaAtributParam = new DiaAtribut[1];
+            diaAtributParam[0] = diaAtribut;
+
+            Stream<TipusDia2DiaAtribut> tipusDia2DiaAtributStream = Arrays.stream(tipusDia2DiaAtributs)
+                    .filter(x -> x.getDia_atribut_id().equalsIgnoreCase(diaAtribut.getDia_atribut_id()));
+
+            mapParameters.put(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT, tipusDia2DiaAtributStream.toArray(TipusDia2DiaAtribut[]::new));
+            mapParameters.put(RTPClassNames.CLASS_PERIODE, p);
+
+            Calendar calendar = new Calendar();
+            csv.add(calendar.getCsvString(mapParameters));
         }
 
         addToEntitiesMap(gtfsFileName, csv);

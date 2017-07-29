@@ -4,7 +4,6 @@ import rtp.RTPClassNames;
 import rtp.entities.*;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -37,8 +36,8 @@ public class Stop_times extends GTFSEntity {
             } else if (key.equalsIgnoreCase(RTPClassNames.CLASS_TEMPS_ITINERARI)) {
                 TempsItinerari tempsItinerari = (TempsItinerari) value;
 
-                setArrivalTime(tempsItinerari.getTemps_viatge());
-                setDeparture_time(tempsItinerari.getTemps_parat(), tempsItinerari.getTemps_viatge());
+                setArrivalTime(tempsItinerari.getAcummulatedTime());
+                setDeparture_time(tempsItinerari.getTemps_parat(), tempsItinerari.getAcummulatedTime());
             }
             else if (key.equalsIgnoreCase(RTPClassNames.CLASS_HORES_DE_PAS)){
                 HoresDePas horaDePas = (HoresDePas) value;
@@ -79,9 +78,11 @@ public class Stop_times extends GTFSEntity {
                     timeOfDay.getHour() + HOURS_IN_A_DAY,
                     timeOfDay.getMinute(),
                     timeOfDay.getSecond());
-        } else {
+        } else if (secondsFromPreviousStation >= 0) {
             LocalTime timeOfDay = LocalTime.ofSecondOfDay(secondsFromPreviousStation);
             stop_times_values.arrival_time = timeOfDay.format(DateTimeFormatter.ofPattern(timeFormat));
+        } else { //value -3 (it doesn't stop at this station) and is the first one
+            stop_times_values.arrival_time = "0";
         }
     }
 
@@ -98,9 +99,11 @@ public class Stop_times extends GTFSEntity {
                     timeOfDay.getHour() + HOURS_IN_A_DAY,
                     timeOfDay.getMinute(),
                     timeOfDay.getSecond());
-        } else {
+        } else if (timeTravel >= 0) {
             timeOfDay = LocalTime.ofSecondOfDay(timeTravel);
             stop_times_values.departure_time = timeOfDay.format(DateTimeFormatter.ofPattern(timeFormat));
+        } else {
+            stop_times_values.departure_time = "0";
         }
     }
 }

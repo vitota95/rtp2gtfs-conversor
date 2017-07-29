@@ -12,7 +12,7 @@ public class HoresDePas extends RTPentity {
 
     public HoresDePas(String v, String h) throws IOException {
         super(v,h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 
     private String periode_id;

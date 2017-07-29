@@ -38,6 +38,6 @@ public class Parada extends RTPentity {
 
     public Parada(String val, String h)  throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 }

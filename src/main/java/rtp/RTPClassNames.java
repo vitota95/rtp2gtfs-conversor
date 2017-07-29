@@ -18,6 +18,9 @@ public interface RTPClassNames {
     String CLASS_TRAJECTE = "Trajecte";
     String CLASS_GRUP_HORARI = "GrupHorari";
     String CLASS_HORES_DE_PAS = "HoresDePas";
+    String CLASS_TIPUS_DIA = "TipusDia";
+    String CLASS_DIA_ATRIBUT = "DiaAtribut";
+    String CLASS_TIPUS_DIA_2_DIA_ATRIBUT = "TipusDia2DiaAtribut";
 
     /**
      * Created by javig on 07/07/2017.

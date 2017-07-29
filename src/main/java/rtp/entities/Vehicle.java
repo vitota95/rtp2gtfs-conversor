@@ -14,7 +14,7 @@ public class Vehicle extends RTPentity {
 
     public Vehicle(String val, String h) throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 
     public String getTipus_vehicle_id() {

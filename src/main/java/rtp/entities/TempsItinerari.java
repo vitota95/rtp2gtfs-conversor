@@ -1,10 +1,6 @@
 package rtp.entities;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -20,6 +16,7 @@ public class TempsItinerari extends RTPentity {
     private String temps_viatge;
     private String temps_parat;
     private String grup_horari_id;
+    private String acumulatedTime;
     private static final String timeFormat = "HH:mm:ss";
     private static final int SECONDS_IN_A_DAY = 86400;
     private static final int HOURS_IN_A_DAY = 24;
@@ -27,7 +24,7 @@ public class TempsItinerari extends RTPentity {
 
     public TempsItinerari(String val, String h) throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 
     public String getGrup_horari_id() {
@@ -58,5 +55,11 @@ public class TempsItinerari extends RTPentity {
         return linia_id;
     }
 
+    public String getAcummulatedTime() {
+        return acumulatedTime;
+    }
 
+    public void setAccumulatedTime(String acumulatedTime) {
+        this.acumulatedTime = acumulatedTime;
+    }
 }

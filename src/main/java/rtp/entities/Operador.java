@@ -21,6 +21,6 @@ public class Operador extends RTPentity {
 
     public Operador(String val, String h)  throws IOException{
         super(val, h);
-        setValues(LOGGER, this.getClass());
+        setValues(LOGGER);
     }
 }

@@ -1,11 +1,7 @@
-import gtfs.GTFSClassNames;
-import writers.Writer;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,7 +16,8 @@ public class Main {
      * and calls inputReader.
      *@param args
      */
-    public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException, ParseException {
+    public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
+            InstantiationException, ParseException, ClassNotFoundException {
         Converter converter;
         Map arguments = new HashMap();
         File mainDirectory;
@@ -57,22 +54,6 @@ public class Main {
             System.out.println("Elapsed time (seconds): " + seconds);
         }
         catch (IOException io){
-            io.printStackTrace();
-        }
-        //writerTest();
-    }
-
-    public static void writerTest() {
-        ArrayList<String> list = new ArrayList<String>() {{
-            add("A;bababa;;;");
-            add("B;3fga3r3a;aaa");
-            add("C");
-        }};
-
-        try {
-            Writer writer = Writer.getInstance();
-            writer.write(GTFSClassNames.CLASS_AGENCY, list, outputDirectory);
-        } catch (IOException io){
             io.printStackTrace();
         }
     }

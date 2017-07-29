@@ -32,10 +32,10 @@ public abstract class RTPentity {
         return (s == null && s.isEmpty());
     }
 
-    void setValues(Logger LOGGER, Class c) throws IOException{
+    void setValues(Logger LOGGER) throws IOException {
         String[] vals = this.valuesString.split(csvSeparator, -1);
 
-        Field[] fields = c.getDeclaredFields();
+        Field[] fields = this.getClass().getDeclaredFields();
         int index;
 
         for (Field f : fields){

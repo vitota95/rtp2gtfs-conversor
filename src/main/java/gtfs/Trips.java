@@ -26,7 +26,7 @@ public class Trips extends GTFSEntity {
             switch (key) {
                 case RTPClassNames.CLASS_EXPEDICIO:
                     Expedicio expedicio = (Expedicio) value;
-                    tripValues.service_id = String.format("%d", Integer.parseInt(expedicio.getPeriode_id()));
+                    tripValues.service_id = String.format("%d", Integer.parseInt(expedicio.getDia_atribut_id()));
                     tripValues.trip_id = expedicio.getExpedicio_id();
                     tripValues.route_id = expedicio.getLinia_id();
                     //params.bikes_allowed = Integer.toString(expedicio.getBicicleta_SN().compareToIgnoreCase("S"));
