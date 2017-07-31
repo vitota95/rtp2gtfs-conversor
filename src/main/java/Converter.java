@@ -10,10 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
@@ -29,6 +34,7 @@ class Converter {
     private String outputDirectory;
     private HashMap<String, ArrayList> RTPentitiesMap;
     private HashMap<String, List> GTFSentitiesMap;
+    private ArrayList<Trips> tripsArrayList = null;
 
     /**
      * @param dir input RTP File
@@ -56,27 +62,36 @@ class Converter {
      * @throws ParseException
      */
     boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException, ClassNotFoundException {
-        if (checkRTPEntities()) {
+        if (checker.checkRTPMap()) {
             setGtfsFilesWithSimpleConversion(Agency.class, GTFSClassNames.CLASS_AGENCY,
                     RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
-            setGtfsFilesWithSimpleConversion(Trips.class, GTFSClassNames.CLASS_TRIPS,
-                    RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
             setGtfsFilesWithSimpleConversion(Routes.class, GTFSClassNames.CLASS_ROUTES,
                     RTPClassNames.CLASS_LINIA, GtfsCsvHeaders.CLASS_ROUTES_CSV);
             setGtfsFilesWithSimpleConversion(Stops.class, GTFSClassNames.CLASS_STOPS,
                     RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
-            if (checker.isTempsitinerari_GrupHorariPresent()){
-                setStopTimesWithGrupHorari(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+
+            if (checker.isRestriccioPresent()) {
+                setCalendarWithRestriccio(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+            } else {
+                setCalendarWithTipusDia(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
             }
-            else{
+
+            if (checker.isTempsitinerari_GrupHorariPresent()) {
+                setStopTimesWithGrupHorari(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+            } else {
                 setStopTimesWithHoresDePas(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
             }
-            //setCalendarWithTipusDia(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+
+
+            setGtfsFilesWithSimpleConversion(Trips.class, GTFSClassNames.CLASS_TRIPS,
+                    RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
 
             writeGTFSFile();
             return true;
+        } else {
+            LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
+            throw new IOException("Conversion not possible");
         }
-        return false;
     }
 
     /**
@@ -84,10 +99,10 @@ class Converter {
      * if not the conversion can't be made.
      * It checks too which optional files are present.
      *
-     * @return
+     * @return true if mandatory files are present, if not false
      */
 
-    boolean checkRTPEntities() {
+    private boolean checkRTPEntities() {
         try {
             if (!checker.checkRTPMap()) {
                 LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
@@ -114,8 +129,8 @@ class Converter {
      * Adds csv file String and key to a map, the key is the GTFS file name
      * which will be written by the file writer at the end.
      *
-     * @param key
-     * @param entityCSV
+     * @param key GTFS file name key to de entities map
+     * @param entityCSV CSV List one GTFS entity per row
      */
 
     private void addToEntitiesMap(String key, List entityCSV) {
@@ -153,7 +168,6 @@ class Converter {
     private void setGtfsFilesWithSimpleConversion(Class gtfsClass, String gtfsFileName, String rtpClass, String gtfsHeader)
             throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, ClassNotFoundException {
-
         ArrayList<RTPentity> rtPentities = RTPentitiesMap.get(rtpClass);
         ArrayList<String> csv = new ArrayList<>();
 
@@ -161,8 +175,8 @@ class Converter {
         Constructor<?> ctor = gtfsClass.getConstructor();
         Object object = ctor.newInstance();
         GTFSEntity entity = (GTFSEntity) object;
-
         csv.add(gtfsHeader);
+
         for (RTPentity rtPentity : rtPentities) {
             Map<String, RTPentity> mapParameters = new HashMap<>();
             GTFSParameters rtpValues = new GTFSParameters();
@@ -216,7 +230,6 @@ class Converter {
                 Itinerari[] itinerariFiltered = itinerariStream.toArray(Itinerari[]::new);
 
                 int index = 0;
-                int stopNumber = 0;
 
                 for (Itinerari itinerari : itinerariFiltered) {
                     Map<String, RTPentity> mapParameters = new HashMap<>();
@@ -227,7 +240,6 @@ class Converter {
                         index++;
                         continue;
                     }
-                    stopNumber++;
 
                     if (index > 0) {
                         int time = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) +
@@ -342,9 +354,7 @@ class Converter {
 
     @SuppressWarnings("unchecked")
     private void setCalendarWithTipusDia(String gtfsFileName, String gtfsHeader) throws IllegalAccessException, IOException {
-        ArrayList<TipusDia> td = RTPentitiesMap.get(RTPClassNames.CLASS_TIPUS_DIA);
         ArrayList<Periode> periodes = RTPentitiesMap.get(RTPClassNames.CLASS_PERIODE);
-        TipusDia[] tipusDias = td.toArray(new TipusDia[td.size()]);
         ArrayList<TipusDia2DiaAtribut> td2da = RTPentitiesMap.get(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT);
         TipusDia2DiaAtribut[] tipusDia2DiaAtributs = td2da.toArray(new TipusDia2DiaAtribut[td2da.size()]);
         ArrayList<DiaAtribut> diaAtributs = RTPentitiesMap.get(RTPClassNames.CLASS_DIA_ATRIBUT);
@@ -357,14 +367,12 @@ class Converter {
 
         for (DiaAtribut diaAtribut : diaAtributs) {
             Map<String, RTPentity[]> mapParameters = new HashMap<>();
-            GTFSParameters rtpValues = new GTFSParameters();
-            DiaAtribut[] diaAtributParam = new DiaAtribut[1];
-            diaAtributParam[0] = diaAtribut;
 
             Stream<TipusDia2DiaAtribut> tipusDia2DiaAtributStream = Arrays.stream(tipusDia2DiaAtributs)
                     .filter(x -> x.getDia_atribut_id().equalsIgnoreCase(diaAtribut.getDia_atribut_id()));
 
-            mapParameters.put(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT, tipusDia2DiaAtributStream.toArray(TipusDia2DiaAtribut[]::new));
+            mapParameters.put(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT,
+                    tipusDia2DiaAtributStream.toArray(TipusDia2DiaAtribut[]::new));
             mapParameters.put(RTPClassNames.CLASS_PERIODE, p);
 
             Calendar calendar = new Calendar();
@@ -372,5 +380,136 @@ class Converter {
         }
 
         addToEntitiesMap(gtfsFileName, csv);
+    }
+
+    /**
+     * Function to generate calendar from restriccio RTP file.
+     * this function only has to be called if we don't have
+     * information in dia_atribut. This can happen because sometimes they use
+     * only restriccio and give a generic dia_atribut.
+     *
+     * @param gtfsFileName
+     * @param gtfsHeader
+     * @throws IOException
+     * @throws ParseException
+     */
+    @SuppressWarnings("unchecked")
+    private void setCalendarWithRestriccio(String gtfsFileName, String gtfsHeader) throws IOException, ParseException, IllegalAccessException {
+        ArrayList<Restriccio> restriccios = RTPentitiesMap.get(RTPClassNames.CLASS_RESTRICCIO);
+        ArrayList<Periode> periodes = RTPentitiesMap.get(RTPClassNames.CLASS_PERIODE);
+        ArrayList<Expedicio> exps = RTPentitiesMap.get(RTPClassNames.CLASS_EXPEDICIO);
+        Expedicio[] expedicios = exps.toArray(new Expedicio[exps.size()]);
+        Periode periode = periodes.get(0);
+        int sid = 1;
+
+        ArrayList<String> csv = new ArrayList<>();
+        csv.add(gtfsHeader);
+
+        for (Restriccio restriccio : restriccios) {
+            ArrayList<TipusDia2DiaAtribut> tipusDia2DiaAtributs =
+                    generateTipusDia2DiaAtributByRestriccio(restriccio.getDies(), String.valueOf(sid), periode);
+
+            Map<String, RTPentity[]> mapParameters = new HashMap<>();
+            mapParameters.put(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT, tipusDia2DiaAtributs
+                    .toArray(new TipusDia2DiaAtribut[tipusDia2DiaAtributs.size()]));
+            mapParameters.put(RTPClassNames.CLASS_PERIODE,
+                    periodes.toArray(new Periode[periodes.size()]));
+
+            Calendar calendar = new Calendar();
+            csv.add(calendar.getCsvString(mapParameters));
+
+
+            Stream<Expedicio> expedicioStream = Arrays.stream(expedicios)
+                    .filter(x -> x.getRestriccio_id().equalsIgnoreCase(restriccio.getRestriccio_id()));
+
+            //Change expedicio restriccio_id to match with new generated service id when assigning to trips
+            int serviceid = sid;
+            expedicioStream.forEach(expedicio -> expedicio.setRestriccio_id(String.valueOf(serviceid)));
+
+            sid++;
+        }
+
+        addToEntitiesMap(gtfsFileName, csv);
+    }
+
+
+    /**
+     * Function to generate the tipus_dia_2_dia_atribut entities needed to
+     * set the calendar.
+     *
+     * @param days      String from restriccio.getDies
+     * @param serviceId given service_id generated in the caller function
+     * @param periode   Periode rtpEntity
+     * @return ArrayList<TipusDia2DiaAtribut>
+     * @throws IOException
+     * @throws ParseException
+     */
+
+    private ArrayList<TipusDia2DiaAtribut> generateTipusDia2DiaAtributByRestriccio(String days, String serviceId
+            , Periode periode) throws IOException, ParseException {
+        ArrayList<TipusDia2DiaAtribut> tipusDia2DiaAtributs = new ArrayList<>();
+        List<String> foundPatterns = new ArrayList<>();
+        List<AtomicInteger> countOfPatterns = new LinkedList<>();
+
+        //Get init day of week to find pattern from Monday to Sunday
+        DateFormat format = new SimpleDateFormat("yyyyMMdd");
+        Date date = format.parse(periode.getPeriode_dinici());
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        c.setTime(date);
+        int dayOfWeek = c.get(java.util.Calendar.DAY_OF_WEEK);
+
+        //Get pattern of weeks (7 days)
+        if (dayOfWeek != java.util.Calendar.MONDAY) {
+            StringBuilder sb = new StringBuilder(days);
+            //We put 9 cause calendar considers sunday as the day 1 and we want to start on monday
+            sb.delete(0, 9 - dayOfWeek);
+            days = sb.toString();
+        }
+
+        Matcher m = Pattern.compile("([0-1]{7})").matcher(days);
+        while (m.find()) {
+            String pattern = m.group();
+            if (!pattern.isEmpty()) {
+                if (!foundPatterns.contains(pattern)) {
+                    foundPatterns.add(pattern);
+                    countOfPatterns.add(new AtomicInteger(1));
+                } else {
+                    countOfPatterns.get(foundPatterns.indexOf(pattern)).incrementAndGet();
+                }
+            }
+        }
+
+        int max = 0;
+        int index = 0;
+        int indexOfMax = -1;
+        for (AtomicInteger count : countOfPatterns) {
+            if (count.get() > max) {
+                max = count.get();
+                indexOfMax = index;
+            }
+            index++;
+        }
+
+        String pattern = foundPatterns.get(indexOfMax);
+
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == '0') {
+                TipusDia2DiaAtribut td = new TipusDia2DiaAtribut("", "");
+                td.setDia_atribut_id(serviceId);
+                td.setTipus_dia_id(String.valueOf(i + 1));
+                tipusDia2DiaAtributs.add(td);
+            }
+        }
+
+        if (tipusDia2DiaAtributs.isEmpty()) {
+            TipusDia2DiaAtribut td = new TipusDia2DiaAtribut("", "");
+            //Add generic tipus dia if all days are 0, this can happen in holidays restriccios
+            //TODO is this a good practise?
+            td.setDia_atribut_id(serviceId);
+            td.setTipus_dia_id("1");
+            tipusDia2DiaAtributs.add(td);
+        }
+
+        return tipusDia2DiaAtributs;
     }
 }
