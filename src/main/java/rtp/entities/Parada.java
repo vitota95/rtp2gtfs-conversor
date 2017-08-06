@@ -13,11 +13,6 @@ public class Parada extends RTPentity {
     private String parada_punt_desc_curta;
     private String coord_x;
     private String coord_y;
-    private String parada_id;
-
-    public String getParada_id() {
-        return parada_id;
-    }
 
     public String getParada_punt_id() {
         return parada_punt_id;

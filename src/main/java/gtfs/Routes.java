@@ -3,7 +3,6 @@ package gtfs;
 import rtp.RTPClassNames;
 import rtp.entities.Linia;
 import rtp.entities.RTPentity;
-
 import java.io.IOException;
 import java.util.List;
 

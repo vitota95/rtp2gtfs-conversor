@@ -29,7 +29,6 @@ public class Stops extends GTFSEntity {
             if (key.equalsIgnoreCase(RTPClassNames.CLASS_PARADA)) {
                 final Parada parada = (Parada) value;
                 stopValues.stop_id = parada.getParada_punt_id();
-                stopValues.stop_code = parada.getParada_id();
                 stopValues.stop_name = parada.getParada_punt_desc_curta();
                 try {
                     double[] coordinates = UTM2WGS.transEd50Wgs84(Double.parseDouble(parada.getCoord_x()),
