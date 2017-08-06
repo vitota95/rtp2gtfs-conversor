@@ -1,5 +1,6 @@
-package gtfs;
+package gtfs.entities;
 
+import gtfs.GtfsCsvHeaders;
 import rtp.RTPClassNames;
 import rtp.entities.*;
 
@@ -81,12 +82,10 @@ public class Stop_times extends GTFSEntity {
         } else if (secondsFromPreviousStation >= 0) {
             LocalTime timeOfDay = LocalTime.ofSecondOfDay(secondsFromPreviousStation);
             stop_times_values.arrival_time = timeOfDay.format(DateTimeFormatter.ofPattern(timeFormat));
-        } else { //value -3 (it doesn't stop at this station) and is the first one
-            stop_times_values.arrival_time = "0";
         }
     }
 
-    public void setDeparture_time(String timeStoped, String travel){
+    private void setDeparture_time(String timeStoped, String travel) {
         LocalTime timeOfDay;
         int timeInStop = Integer.parseInt(timeStoped);
         int timeTravel = Integer.parseInt(travel);
@@ -102,18 +101,16 @@ public class Stop_times extends GTFSEntity {
         } else if (timeTravel >= 0) {
             timeOfDay = LocalTime.ofSecondOfDay(timeTravel);
             stop_times_values.departure_time = timeOfDay.format(DateTimeFormatter.ofPattern(timeFormat));
-        } else {
-            stop_times_values.departure_time = "0";
         }
     }
 }
 
 class Stop_times_Values {
-    public String trip_id;
-    public String arrival_time;
-    public String departure_time;
-    public String stop_id;
-    public String stop_sequence;
+    String trip_id;
+    String arrival_time;
+    String departure_time;
+    String stop_id;
+    String stop_sequence;
     static final String stop_headsign = "";
     static final String pickup_type = "";
     static final String drop_off_type = "";

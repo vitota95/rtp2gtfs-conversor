@@ -21,6 +21,7 @@ public interface RTPClassNames {
     String CLASS_TIPUS_DIA = "TipusDia";
     String CLASS_DIA_ATRIBUT = "DiaAtribut";
     String CLASS_TIPUS_DIA_2_DIA_ATRIBUT = "TipusDia2DiaAtribut";
+    String CLASS_CALENDAR_DATES_ENTITY = "Calendar_datesEntity";
 
     /**
      * Created by javig on 07/07/2017.

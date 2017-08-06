@@ -29,6 +29,10 @@ public class Itinerari extends RTPentity {
         return sequencia_id;
     }
 
+    public void setSequencia_id(String sequencia_id) {
+        this.sequencia_id = sequencia_id;
+    }
+
     public String getParada_punt_id() {
         return parada_punt_id;
     }

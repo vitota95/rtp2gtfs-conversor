@@ -1,5 +1,6 @@
-package gtfs;
+package gtfs.entities;
 
+import gtfs.GtfsCsvHeaders;
 import rtp.RTPClassNames;
 import rtp.entities.Periode;
 import rtp.entities.RTPentity;

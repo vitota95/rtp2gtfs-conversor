@@ -1,6 +1,7 @@
-package gtfs;
+package gtfs.entities;
 
 import geotool.UTM2WGS;
+import gtfs.GtfsCsvHeaders;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import rtp.RTPClassNames;

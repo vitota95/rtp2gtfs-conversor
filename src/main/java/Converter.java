@@ -1,5 +1,8 @@
-import gtfs.*;
-import gtfs.Calendar;
+import gtfs.GTFSFilenames;
+import gtfs.GTFSParameters;
+import gtfs.GtfsCsvHeaders;
+import gtfs.entities.*;
+import gtfs.entities.Calendar;
 import rtp.InputReader;
 import rtp.RTPChecker;
 import rtp.RTPClassNames;
@@ -34,7 +37,7 @@ class Converter {
     private String outputDirectory;
     private HashMap<String, ArrayList> RTPentitiesMap;
     private HashMap<String, List> GTFSentitiesMap;
-    private ArrayList<Trips> tripsArrayList = null;
+    private final static String DATE_PATTERN = "yyyyMMdd";
 
     /**
      * @param dir input RTP File
@@ -63,27 +66,27 @@ class Converter {
      */
     boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException, ClassNotFoundException {
         if (checker.checkRTPMap()) {
-            setGtfsFilesWithSimpleConversion(Agency.class, GTFSClassNames.CLASS_AGENCY,
+            setGtfsFilesWithSimpleConversion(Agency.class, GTFSFilenames.CLASS_AGENCY,
                     RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
-            setGtfsFilesWithSimpleConversion(Routes.class, GTFSClassNames.CLASS_ROUTES,
+            setGtfsFilesWithSimpleConversion(Routes.class, GTFSFilenames.CLASS_ROUTES,
                     RTPClassNames.CLASS_LINIA, GtfsCsvHeaders.CLASS_ROUTES_CSV);
-            setGtfsFilesWithSimpleConversion(Stops.class, GTFSClassNames.CLASS_STOPS,
+            setGtfsFilesWithSimpleConversion(Stops.class, GTFSFilenames.CLASS_STOPS,
                     RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
 
             if (checker.isRestriccioPresent()) {
-                setCalendarWithRestriccio(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+                setCalendarWithRestriccio(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
             } else {
-                setCalendarWithTipusDia(GTFSClassNames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+                setCalendarWithTipusDia(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
             }
 
             if (checker.isTempsitinerari_GrupHorariPresent()) {
-                setStopTimesWithGrupHorari(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+                setStopTimesWithGrupHorari(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
             } else {
-                setStopTimesWithHoresDePas(GTFSClassNames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+                setStopTimesWithHoresDePas(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
             }
 
 
-            setGtfsFilesWithSimpleConversion(Trips.class, GTFSClassNames.CLASS_TRIPS,
+            setGtfsFilesWithSimpleConversion(Trips.class, GTFSFilenames.CLASS_TRIPS,
                     RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
 
             writeGTFSFile();
@@ -92,37 +95,6 @@ class Converter {
             LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
             throw new IOException("Conversion not possible");
         }
-    }
-
-    /**
-     * Checks if all mandatory RTP files are present in the RTP zip
-     * if not the conversion can't be made.
-     * It checks too which optional files are present.
-     *
-     * @return true if mandatory files are present, if not false
-     */
-
-    private boolean checkRTPEntities() {
-        try {
-            if (!checker.checkRTPMap()) {
-                LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
-                throw new IOException("Conversion not possible");
-            }
-
-            if (checker.isRestriccioPresent()) {
-                LOGGER.info("We have restriccio");
-            }
-
-            if (checker.isVehiclePresent()) {
-                LOGGER.info("We have vehicle");
-            }
-
-            return true;
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        return false;
     }
 
     /**
@@ -137,9 +109,15 @@ class Converter {
         GTFSentitiesMap.put(key, entityCSV);
     }
 
+    /**
+     * Gets the writer singleton to write the gtfs files.
+     *
+     * @throws IOException
+     */
+
     private void writeGTFSFile() throws IOException {
         Writer writer = Writer.getInstance();
-        final String header;
+
         GTFSentitiesMap.forEach((fileName, value) -> {
             try {
                 writer.write(fileName, value, outputDirectory);
@@ -164,7 +142,7 @@ class Converter {
      * @throws InstantiationException
      * @throws ClassNotFoundException
      */
-
+    @SuppressWarnings("unchecked")
     private void setGtfsFilesWithSimpleConversion(Class gtfsClass, String gtfsFileName, String rtpClass, String gtfsHeader)
             throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, ClassNotFoundException {
@@ -230,35 +208,46 @@ class Converter {
                 Itinerari[] itinerariFiltered = itinerariStream.toArray(Itinerari[]::new);
 
                 int index = 0;
+                int previousSequencia_id = 0;
+                int previousAccumulatedTime = 0;
 
                 for (Itinerari itinerari : itinerariFiltered) {
                     Map<String, RTPentity> mapParameters = new HashMap<>();
                     GTFSParameters rtpValues = new GTFSParameters();
 
+                    //Copy to avoid problems with synchronization
+                    TempsItinerari tempsItinerari = tempsItinerariFiltered[index];
+                    Itinerari itinerariCopy = itinerari;
+
                     // Prevent negative RTP values
-                    if (Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) < 0) {
+                    if (Integer.parseInt(tempsItinerari.getTemps_viatge()) < 0) {
                         index++;
                         continue;
                     }
 
                     if (index > 0) {
-                        int time = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) +
-                                Integer.parseInt(tempsItinerariFiltered[index - 1].getAcummulatedTime());
-                        tempsItinerariFiltered[index].setAccumulatedTime(String.valueOf(time));
+                        int time = Integer.parseInt(tempsItinerari.getTemps_viatge()) +
+                                previousAccumulatedTime;
+                        tempsItinerari.setAccumulatedTime(String.valueOf(time));
                     } else {
                         int time = 0;
                         try {
-                            time = Integer.parseInt(tempsItinerariFiltered[index].getTemps_viatge()) +
+                            time = Integer.parseInt(tempsItinerari.getTemps_viatge()) +
                                     Integer.parseInt(expedicio.getSortida_hora());
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        tempsItinerariFiltered[index].setAccumulatedTime(String.valueOf(time));
+                        tempsItinerari.setAccumulatedTime(String.valueOf(time));
                     }
 
+                    //New accumulated time and sequencia_id
+                    previousAccumulatedTime = Integer.parseInt(tempsItinerari.getAcummulatedTime());
+                    previousSequencia_id++;
+                    itinerariCopy.setSequencia_id(String.valueOf(previousSequencia_id));
+
                     mapParameters.put(RTPClassNames.CLASS_EXPEDICIO, expedicio);
-                    mapParameters.put(RTPClassNames.CLASS_TEMPS_ITINERARI, tempsItinerariFiltered[index]);
-                    mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerari);
+                    mapParameters.put(RTPClassNames.CLASS_TEMPS_ITINERARI, tempsItinerari);
+                    mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerariCopy);
                     rtpValues.setRTPobjects(mapParameters);
                     Stop_times stop_times = new Stop_times();
                     try {
@@ -293,7 +282,6 @@ class Converter {
      *
      * @param gtfsFileName Name of the GTFS file generated
      * @param gtfsHeader   Header of the GTFS file generated
-     * @throws IllegalAccessException
      */
     @SuppressWarnings("unchecked")
     private void setStopTimesWithHoresDePas(String gtfsFileName, String gtfsHeader) {
@@ -400,6 +388,10 @@ class Converter {
         ArrayList<Expedicio> exps = RTPentitiesMap.get(RTPClassNames.CLASS_EXPEDICIO);
         Expedicio[] expedicios = exps.toArray(new Expedicio[exps.size()]);
         Periode periode = periodes.get(0);
+        ArrayList<String> calendarDatesCsv = new ArrayList<>();
+
+        calendarDatesCsv.add(GtfsCsvHeaders.CLASS_CALENDAR_DATES_CSV);
+
         int sid = 1;
 
         ArrayList<String> csv = new ArrayList<>();
@@ -407,7 +399,7 @@ class Converter {
 
         for (Restriccio restriccio : restriccios) {
             ArrayList<TipusDia2DiaAtribut> tipusDia2DiaAtributs =
-                    generateTipusDia2DiaAtributByRestriccio(restriccio.getDies(), String.valueOf(sid), periode);
+                    generateTipusDia2DiaAtributByRestriccio(restriccio.getDies(), String.valueOf(sid), periode, calendarDatesCsv);
 
             Map<String, RTPentity[]> mapParameters = new HashMap<>();
             mapParameters.put(RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT, tipusDia2DiaAtributs
@@ -430,6 +422,7 @@ class Converter {
         }
 
         addToEntitiesMap(gtfsFileName, csv);
+        addToEntitiesMap(GTFSFilenames.CLASS_CALENDAR_DATES, calendarDatesCsv);
     }
 
 
@@ -442,21 +435,17 @@ class Converter {
      * @param periode   Periode rtpEntity
      * @return ArrayList<TipusDia2DiaAtribut>
      * @throws IOException
-     * @throws ParseException
+     * @throws ParseException string can't be matched
      */
 
     private ArrayList<TipusDia2DiaAtribut> generateTipusDia2DiaAtributByRestriccio(String days, String serviceId
-            , Periode periode) throws IOException, ParseException {
+            , Periode periode, ArrayList<String> calendarDatesCsv) throws IOException, ParseException, IllegalAccessException {
         ArrayList<TipusDia2DiaAtribut> tipusDia2DiaAtributs = new ArrayList<>();
         List<String> foundPatterns = new ArrayList<>();
         List<AtomicInteger> countOfPatterns = new LinkedList<>();
 
         //Get init day of week to find pattern from Monday to Sunday
-        DateFormat format = new SimpleDateFormat("yyyyMMdd");
-        Date date = format.parse(periode.getPeriode_dinici());
-        java.util.Calendar c = java.util.Calendar.getInstance();
-        c.setTime(date);
-        int dayOfWeek = c.get(java.util.Calendar.DAY_OF_WEEK);
+        int dayOfWeek = getCalendarFromStringDate(periode.getPeriode_dinici()).get(java.util.Calendar.DAY_OF_WEEK);
 
         //Get pattern of weeks (7 days)
         if (dayOfWeek != java.util.Calendar.MONDAY) {
@@ -466,6 +455,7 @@ class Converter {
             days = sb.toString();
         }
 
+        //Get pattern for every week to find the most common pattern
         Matcher m = Pattern.compile("([0-1]{7})").matcher(days);
         while (m.find()) {
             String pattern = m.group();
@@ -490,6 +480,7 @@ class Converter {
             index++;
         }
 
+        //Create Calendar table from the most common pattern
         String pattern = foundPatterns.get(indexOfMax);
 
         for (int i = 0; i < pattern.length(); i++) {
@@ -504,12 +495,75 @@ class Converter {
         if (tipusDia2DiaAtributs.isEmpty()) {
             TipusDia2DiaAtribut td = new TipusDia2DiaAtribut("", "");
             //Add generic tipus dia if all days are 0, this can happen in holidays restriccios
-            //TODO is this a good practise?
             td.setDia_atribut_id(serviceId);
             td.setTipus_dia_id("1");
             tipusDia2DiaAtributs.add(td);
         }
 
+        setCalendarDatesByRestriccio(days, pattern, periode.getPeriode_dinici(), serviceId, calendarDatesCsv);
+
         return tipusDia2DiaAtributs;
+    }
+
+    /**
+     * Function to set the list of calendar dates, it uses the restriccio dies and calendar pattern to
+     * find strings not matching the calendar pattern to add them to the restriction.
+     *
+     * @param restriccioDays String of RTP restriccio days
+     * @param commonPattern  Pattern in calendar for this restriction
+     * @param initDate       First date of the period
+     * @param serviceId      Id of the service to set
+     * @param csv            List with all csv calendar dates
+     * @throws ParseException
+     * @throws IllegalAccessException
+     */
+
+    private void setCalendarDatesByRestriccio(String restriccioDays, String commonPattern, String initDate,
+                                              String serviceId, ArrayList<String> csv) throws ParseException, IllegalAccessException {
+
+        java.util.Calendar c = getCalendarFromStringDate(initDate);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+
+
+        Matcher m = Pattern.compile("([0-1]{7})").matcher(restriccioDays);
+
+        while (m.find()) {
+            String pattern = m.group();
+            if (!pattern.isEmpty()) {
+                if (pattern.equals(commonPattern)) {
+                    c.add(java.util.Calendar.DATE, java.util.Calendar.DAY_OF_WEEK);
+                } else {
+                    for (char ch : pattern.toCharArray()) {
+                        //There is a restriction in this day
+                        if (ch == '1') {
+                            Calendar_dates calendarDates = new Calendar_dates();
+                            calendarDates.setDate(sdf.format(c.getTime()));
+                            calendarDates.setService_id(serviceId);
+                            csv.add(calendarDates.toCSV());
+                        }
+                        c.add(java.util.Calendar.DATE, 1);
+                    }
+                }
+            } else {
+                LOGGER.log(Level.WARNING, "can not find pattern, must be a problem in restriccio.rtp");
+            }
+        }
+    }
+
+    /**
+     * Function that returns a calendar object from a date string.
+     *
+     * @param d date to get calendar
+     * @return java.util.calendar
+     * @throws ParseException string of date can't be parsed
+     */
+
+    private java.util.Calendar getCalendarFromStringDate(String d) throws ParseException {
+        DateFormat format = new SimpleDateFormat(DATE_PATTERN);
+        Date date = format.parse(d);
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar;
     }
 }

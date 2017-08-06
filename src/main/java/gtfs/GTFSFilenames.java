@@ -3,7 +3,7 @@ package gtfs;
 /**
  * Created by javig on 14/07/2017.
  */
-public interface GTFSClassNames {
+public interface GTFSFilenames {
     String CLASS_AGENCY= "agency.txt";
     String CLASS_CALENDAR = "calendar.txt";
     String CLASS_CALENDAR_DATES = "calendar_dates.txt";

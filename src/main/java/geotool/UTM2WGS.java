@@ -14,11 +14,11 @@ import org.opengis.referencing.operation.TransformException;
 public class UTM2WGS {
 
     /**
-     * This function uses a mathTransform to change the lat,lon coordinates form the UTM ed 31 (ESPG:25831)
+     * This function uses a mathTransform to change the lat,lon coordinates from the UTM ed 31 (ESPG:25831)
      * to the WGS84 (ESPG:4326)
      *
-     * @param lat
-     * @param lon
+     * @param lat latitude to be transformed
+     * @param lon longitude to be transformed
      * @return lat, lon coordinates in WGS84
      */
     public static double[] transEd50Wgs84(double lat, double lon) throws FactoryException, TransformException {

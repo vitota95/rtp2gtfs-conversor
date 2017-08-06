@@ -1,8 +1,10 @@
-package gtfs;
+package gtfs.entities;
 
+import gtfs.GtfsCsvHeaders;
 import rtp.RTPClassNames;
 import rtp.entities.Linia;
 import rtp.entities.RTPentity;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -45,10 +47,10 @@ public class Routes extends GTFSEntity {
 
 class RoutesValues
 {
-    public String route_id;
-    public String route_short_name;
-    public String route_long_name;
-    public String agency_id;
+    String route_id;
+    String route_short_name;
+    String route_long_name;
+    String agency_id;
     public static final String route_desc="";
     public static final String route_type = "3";
     public static final String route_url = "";

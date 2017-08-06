@@ -16,21 +16,36 @@ public abstract class RTPentity {
     private List heads = null;
     private static String csvSeparator = ";";
 
+    /**
+     * @param v csv string of the RTP file
+     * @param h header of the RTP file
+     */
+
     public RTPentity(String v, String h){
         this.valuesString = v;
         if (heads == null){
             heads = Arrays.asList(h.split(csvSeparator, -1));
             ListIterator<String> iterator = heads.listIterator();
-            while (iterator.hasNext())
-            {
+            while (iterator.hasNext()) {
                 iterator.set(iterator.next().toLowerCase());
             }
         }
     }
 
+    /**
+     * Checks if there is an empty line or a mandatory value not assigned
+     *
+     * @param s String to check
+     * @return boolean with the result
+     */
     private static boolean checkEmpty(String s){
         return (s == null && s.isEmpty());
     }
+
+    /**
+     * @param LOGGER logger of the RTP entity
+     * @throws IOException exception thrown at error
+     */
 
     void setValues(Logger LOGGER) throws IOException {
         String[] vals = this.valuesString.split(csvSeparator, -1);
@@ -45,8 +60,7 @@ public abstract class RTPentity {
                     if (!checkEmpty(vals[index])) {
                         f.setAccessible(true);
                         f.set(this, vals[index]);
-                    }
-                    else {
+                    } else {
                         LOGGER.log(Level.SEVERE, "Empty value " + heads.get(index));
                         throw new IOException("Empty value detected");
                     }
