@@ -15,20 +15,18 @@ public interface RTPClassNames {
     String CLASS_ITINERARI = "Itinerari";
     String CLASS_VEHICLE = "Vehicle";
     String CLASS_TEMPS_ITINERARI = "TempsItinerari";
-    String CLASS_TRAJECTE = "Trajecte";
     String CLASS_GRUP_HORARI = "GrupHorari";
     String CLASS_HORES_DE_PAS = "HoresDePas";
     String CLASS_TIPUS_DIA = "TipusDia";
     String CLASS_DIA_ATRIBUT = "DiaAtribut";
     String CLASS_TIPUS_DIA_2_DIA_ATRIBUT = "TipusDia2DiaAtribut";
-    String CLASS_CALENDAR_DATES_ENTITY = "Calendar_datesEntity";
 
     /**
      * Created by javig on 07/07/2017.
      */
     interface MandatoryRTPEntities {
-        String[] filesMandatory = {CLASS_VERSIO, CLASS_OPERADOR, CLASS_PARADA, CLASS_LINIA,
-                CLASS_EXPEDICIO, CLASS_PERIODE, CLASS_ITINERARI, CLASS_TRAJECTE};
+        String[] filesMandatory = {CLASS_OPERADOR, CLASS_PARADA, CLASS_LINIA,
+                CLASS_EXPEDICIO};
         String horesDePas = CLASS_HORES_DE_PAS;
         String[] tempsItinerari_GrupHorari = {CLASS_GRUP_HORARI, CLASS_TEMPS_ITINERARI};
     }

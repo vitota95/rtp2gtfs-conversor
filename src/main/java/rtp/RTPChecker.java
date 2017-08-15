@@ -23,34 +23,54 @@ public class RTPChecker {
         mandatoryFiles = Arrays.asList(RTPClassNames.MandatoryRTPEntities.filesMandatory);
     }
 
-    public boolean checkRTPMap(){
+    public ArrayList<String> checkRTPMap() {
+        ArrayList<String> filesToConvert = new ArrayList<>();
 
-        if (entityKeys.containsAll(mandatoryFiles)){
-
-            if (isHoresDepasPresent()){
-                LOGGER.info("All mandatory files were read, using hores de pas to calculate stop_times");
-                return true;
+        //Get files present to convert
+        for (String rtpFile : mandatoryFiles) {
+            if (entityKeys.contains(rtpFile)) {
+                filesToConvert.add(rtpFile);
+            } else {
+                LOGGER.log(Level.WARNING, rtpFile + " not present, associated tables will not be generated");
             }
-            if (isTempsitinerari_GrupHorariPresent()) {
-                LOGGER.info("All mandatory files were read, using grup horari and temps itinerari " +
-                        "to calculate stop_times");
-                return true;
-            }
+        }
 
+        if (this.isRestriccioPresent()) {
+            filesToConvert.add(RTPClassNames.CLASS_RESTRICCIO);
         }
-        else {
-            LOGGER.log(Level.SEVERE, "Some mandatory files are missing");
+
+        if (this.isHoresDepasPresent()) {
+            filesToConvert.add(RTPClassNames.CLASS_HORES_DE_PAS);
+        } else if (this.isTempsitinerari_GrupHorariPresent()) {
+            filesToConvert.add(RTPClassNames.CLASS_GRUP_HORARI);
+        } else {
+            LOGGER.log(Level.WARNING, "neither Hores de pas, nor temps itinerari were found. Calendars are not being generated");
         }
-        return false;
+
+        return filesToConvert;
     }
 
     public boolean isTempsitinerari_GrupHorariPresent() { return entityKeys.containsAll
             (Arrays.asList(RTPClassNames.MandatoryRTPEntities.tempsItinerari_GrupHorari));}
 
-    public boolean isHoresDepasPresent(){ return  entityKeys.contains(RTPClassNames.MandatoryRTPEntities.horesDePas);}
+    private boolean isHoresDepasPresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_HORES_DE_PAS);
+    }
 
     public boolean isRestriccioPresent(){
         return entityKeys.contains(RTPClassNames.CLASS_RESTRICCIO);
+    }
+
+    public boolean isPeriodePresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_PERIODE);
+    }
+
+    public boolean isItinerariPresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_ITINERARI);
+    }
+
+    public boolean isTempsItinerariPresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_TEMPS_ITINERARI);
     }
 
     public boolean isVehiclePresent() {

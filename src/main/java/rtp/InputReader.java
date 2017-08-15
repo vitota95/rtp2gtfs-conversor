@@ -82,9 +82,6 @@ public class InputReader {
                     case FileNames.FILE_RTP_TEMPS_ITINERARI:
                         this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TEMPS_ITINERARI);
                         break;
-                    case FileNames.FILE_RTP_TRAJECTE:
-                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TRAJECTE);
-                        break;
                     case FileNames.FILE_RTP_VEHICLE:
                         this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_VEHICLE);
                         break;

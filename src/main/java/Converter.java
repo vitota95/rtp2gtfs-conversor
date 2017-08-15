@@ -31,8 +31,6 @@ import java.util.stream.Stream;
 class Converter {
 
     private static final Logger LOGGER = Logger.getLogger( Converter.class.getName() );
-
-    private InputReader iReader;
     private RTPChecker checker;
     private String outputDirectory;
     private HashMap<String, ArrayList> RTPentitiesMap;
@@ -45,6 +43,7 @@ class Converter {
      * @throws IOException
      */
     Converter(File dir, String od) throws IOException {
+        InputReader iReader;
         iReader = new InputReader(dir);
         RTPentitiesMap = iReader.getEntities();
         checker = new RTPChecker(RTPentitiesMap);
@@ -65,36 +64,72 @@ class Converter {
      * @throws ParseException
      */
     boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException, ClassNotFoundException {
-        if (checker.checkRTPMap()) {
-            setGtfsFilesWithSimpleConversion(Agency.class, GTFSFilenames.CLASS_AGENCY,
-                    RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
-            setGtfsFilesWithSimpleConversion(Routes.class, GTFSFilenames.CLASS_ROUTES,
-                    RTPClassNames.CLASS_LINIA, GtfsCsvHeaders.CLASS_ROUTES_CSV);
-            setGtfsFilesWithSimpleConversion(Stops.class, GTFSFilenames.CLASS_STOPS,
-                    RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
 
-            if (checker.isRestriccioPresent()) {
-                setCalendarWithRestriccio(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
-            } else {
-                setCalendarWithTipusDia(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+        boolean completeResult = true;
+
+        for (String rtpClass : checker.checkRTPMap()) {
+            switch (rtpClass) {
+                case RTPClassNames.CLASS_OPERADOR:
+                    setGtfsFilesWithSimpleConversion(Agency.class, GTFSFilenames.CLASS_AGENCY,
+                            RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
+                    break;
+                case RTPClassNames.CLASS_LINIA:
+                    setGtfsFilesWithSimpleConversion(Routes.class, GTFSFilenames.CLASS_ROUTES,
+                            RTPClassNames.CLASS_LINIA, GtfsCsvHeaders.CLASS_ROUTES_CSV);
+                    break;
+                case RTPClassNames.CLASS_PARADA:
+                    setGtfsFilesWithSimpleConversion(Stops.class, GTFSFilenames.CLASS_STOPS,
+                            RTPClassNames.CLASS_PARADA, GtfsCsvHeaders.CLASS_STOPS_CSV);
+                    break;
+                case RTPClassNames.CLASS_GRUP_HORARI:
+                    if (checker.isItinerariPresent())
+                        setStopTimesWithGrupHorari(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+                    else {
+                        LOGGER.warning("Itinerari RTP table not present");
+                        completeResult = false;
+                    }
+                    break;
+                case RTPClassNames.CLASS_HORES_DE_PAS:
+                    if (checker.isItinerariPresent())
+                        setStopTimesWithHoresDePas(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
+                    else {
+                        LOGGER.warning("Itinerari RTP table not present");
+                        completeResult = false;
+                    }
+                    break;
+                case RTPClassNames.CLASS_EXPEDICIO:
+                    setGtfsFilesWithSimpleConversion(Trips.class, GTFSFilenames.CLASS_TRIPS,
+                            RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
+                    break;
+                case RTPClassNames.CLASS_RESTRICCIO:
+                    if (checker.isPeriodePresent())
+                        setCalendarWithRestriccio(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+                    else {
+                        LOGGER.warning("Itinerari RTP table not present");
+                        completeResult = false;
+                    }
+                    break;
+                case RTPClassNames.CLASS_TIPUS_DIA:
+                    //If we have restriccio, tipus dia is not necessary
+                    if (!checker.isRestriccioPresent()) {
+                        if (checker.isPeriodePresent()) {
+                            LOGGER.warning("Periode RTP table not present");
+                            completeResult = false;
+                        } else {
+                            setCalendarWithTipusDia(GTFSFilenames.CLASS_CALENDAR, GtfsCsvHeaders.CLASS_CALENDAR_CSV);
+                        }
+                    }
+                    break;
+                default:
+                    LOGGER.warning(rtpClass + " File not known");
+                    completeResult = false;
+                    break;
             }
-
-            if (checker.isTempsitinerari_GrupHorariPresent()) {
-                setStopTimesWithGrupHorari(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
-            } else {
-                setStopTimesWithHoresDePas(GTFSFilenames.CLASS_STOP_TIMES, GtfsCsvHeaders.CLASS_STOP_TIMES_CSV);
-            }
-
-
-            setGtfsFilesWithSimpleConversion(Trips.class, GTFSFilenames.CLASS_TRIPS,
-                    RTPClassNames.CLASS_EXPEDICIO, GtfsCsvHeaders.CLASS_TRIPS_CSV);
-
-            writeGTFSFile();
-            return true;
-        } else {
-            LOGGER.log(Level.SEVERE, "Cannot perform conversion, some mandatory files not present");
-            throw new IOException("Conversion not possible");
         }
+
+        writeGTFSFile();
+
+        return completeResult;
     }
 
     /**

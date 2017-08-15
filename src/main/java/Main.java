@@ -37,7 +37,7 @@ public class Main {
         try{
             boolean conversionDone = false;
             if(mainDirectory.exists()){
-                LOGGER.info("Found directory");
+                LOGGER.info("Found directory " + mainDirectory);
                 converter = new Converter(mainDirectory, outputDirectory);
                 conversionDone = converter.convert();
             }
@@ -47,6 +47,8 @@ public class Main {
 
             if (conversionDone) {
                 LOGGER.fine("Conversion performed GTFS file saved to ");
+            } else {
+                LOGGER.warning("Some files were not saved");
             }
 
             long elapsedTime = System.nanoTime() - start;
