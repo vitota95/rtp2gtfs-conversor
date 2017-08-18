@@ -17,7 +17,7 @@ public class RTPChecker {
     private List<String> entityKeys;
     private List<String> mandatoryFiles;
 
-
+    @SuppressWarnings("unchecked")
     public RTPChecker(Map entities){
         entityKeys = new ArrayList<>(entities.keySet());
         mandatoryFiles = Arrays.asList(RTPClassNames.MandatoryRTPEntities.filesMandatory);

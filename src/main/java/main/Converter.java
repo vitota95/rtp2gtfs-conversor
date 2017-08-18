@@ -1,3 +1,5 @@
+package main;
+
 import gtfs.GTFSFilenames;
 import gtfs.GTFSParameters;
 import gtfs.GtfsCsvHeaders;
@@ -28,7 +30,6 @@ import java.util.stream.Stream;
  * Created by javig on 07/07/2017.
  * Class that perform the conversion using the data read from the RTP files
  */
-
 class Converter {
 
     private static final Logger LOGGER = Logger.getLogger( Converter.class.getName() );
@@ -310,27 +311,27 @@ class Converter {
                             .equalsIgnoreCase(expedicio.getExpedicio_id()))
                     .forEach(horaDepas -> {
                         //Get itinerari which match the same linia, trajecte and hora de pas
-                Optional<Itinerari> itinerariOptional = Arrays.stream(itineraris)
-                        .filter(x -> x.getLinia_id().equalsIgnoreCase(expedicio.getLinia_id()))
-                        .filter(x -> x.getTrajecte_id().equalsIgnoreCase(expedicio.getTrajecte_id()))
-                        .filter(x -> x.getSequencia_id().equalsIgnoreCase(horaDepas.getSequencia_id()))
-                        .findFirst();
+                        Optional<Itinerari> itinerariOptional = Arrays.stream(itineraris)
+                                .filter(x -> x.getLinia_id().equalsIgnoreCase(expedicio.getLinia_id()))
+                                .filter(x -> x.getTrajecte_id().equalsIgnoreCase(expedicio.getTrajecte_id()))
+                                .filter(x -> x.getSequencia_id().equalsIgnoreCase(horaDepas.getSequencia_id()))
+                                .findFirst();
 
-                if (itinerariOptional.isPresent()) {
-                    Itinerari itinerari = itinerariOptional.get();
-                    Map<String, RTPentity> mapParameters = new HashMap<>();
-                    GTFSParameters rtpValues = new GTFSParameters();
-                    mapParameters.put(RTPClassNames.CLASS_EXPEDICIO, expedicio);
-                    mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerari);
-                    mapParameters.put(RTPClassNames.CLASS_HORES_DE_PAS, horaDepas);
-                    rtpValues.setRTPobjects(mapParameters);
-                    Stop_times stop_times = new Stop_times();
-                    try {
-                        csv.add(stop_times.getCsvString(rtpValues));
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        if (itinerariOptional.isPresent()) {
+                            Itinerari itinerari = itinerariOptional.get();
+                            Map<String, RTPentity> mapParameters = new HashMap<>();
+                            GTFSParameters rtpValues = new GTFSParameters();
+                            mapParameters.put(RTPClassNames.CLASS_EXPEDICIO, expedicio);
+                            mapParameters.put(RTPClassNames.CLASS_ITINERARI, itinerari);
+                            mapParameters.put(RTPClassNames.CLASS_HORES_DE_PAS, horaDepas);
+                            rtpValues.setRTPobjects(mapParameters);
+                            Stop_times stop_times = new Stop_times();
+                            try {
+                                csv.add(stop_times.getCsvString(rtpValues));
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     });
         }
         addToEntitiesMap(gtfsFileName, csv);
