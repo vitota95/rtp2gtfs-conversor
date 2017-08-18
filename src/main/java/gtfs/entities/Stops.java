@@ -56,7 +56,7 @@ public class Stops extends GTFSEntity {
 
 class StopValues {
     String stop_id;
-    String stop_code;
+    String stop_code = "";
     String stop_name;
     static final String stop_desc = "";
     String stop_lat;
