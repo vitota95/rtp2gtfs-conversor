@@ -15,12 +15,7 @@ import java.util.Map;
  */
 
 public class Writer  {
-
-    private static final String GTFSName = "GTFS.zip";
     private static Writer instance;
-
-    public Writer() {
-    }
 
     public static Writer getInstance() throws  FileNotFoundException{
         if(instance == null){
@@ -34,7 +29,7 @@ public class Writer  {
 
         Map<String, String> env = new HashMap<>();
         env.put("create", "true");
-        Path path = Paths.get(outputDirectory + GTFSName);
+        Path path = Paths.get(outputDirectory);
         URI uri = URI.create("jar:" + path.toUri());
         StringBuilder sb = new StringBuilder();
         sb.append(String.join("\n", entities));
