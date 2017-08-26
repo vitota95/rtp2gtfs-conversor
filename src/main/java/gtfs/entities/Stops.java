@@ -34,8 +34,8 @@ public class Stops extends GTFSEntity {
                 try {
                     double[] coordinates = UTM2WGS.transEd50Wgs84(Double.parseDouble(parada.getCoord_x()),
                             Double.parseDouble(parada.getCoord_y()));
-                    stopValues.stop_lat = String.valueOf(coordinates[1]);
                     stopValues.stop_lon = String.valueOf(coordinates[0]);
+                    stopValues.stop_lat = String.valueOf(coordinates[1]);
                 } catch (FactoryException | TransformException e) {
                     e.printStackTrace();
                 }
