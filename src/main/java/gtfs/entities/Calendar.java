@@ -106,11 +106,3 @@ class CalendarParams {
     String saturday = "0";
     String sunday = "0";
 }
-
-//                    calendarValues.sunday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(0)) ^ 1);
-//                            calendarValues.monday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(1)) ^ 1);
-//                            calendarValues.tuesday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(2)) ^ 1);
-//                            calendarValues.wednesday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(3)) ^ 1);
-//                            calendarValues.thursday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(4)) ^ 1);
-//                            calendarValues.friday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(5)) ^ 1);
-//                            calendarValues.saturday = String.valueOf(Character.getNumericValue(restriccio.getDies().charAt(6)) ^ 1);

@@ -28,5 +28,4 @@ public class TipusDia extends RTPentity {
         return tipus_dia_codi;
     }
 
-
 }

@@ -1,4 +1,4 @@
-package main;
+package conversor;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class Main {
      */
     public static void main(String[] args) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException,
             InstantiationException, ParseException, ClassNotFoundException {
-        main.Converter converter;
+        conversor.Converter converter;
         File mainDirectory;
         long start = System.nanoTime();
 
@@ -36,7 +36,7 @@ public class Main {
             boolean conversionDone = false;
             if(mainDirectory.exists()){
                 LOGGER.info("Found directory " + mainDirectory);
-                converter = new main.Converter(mainDirectory, outputDirectory);
+                converter = new conversor.Converter(mainDirectory, outputDirectory);
                 conversionDone = converter.convert();
             } else {
                 LOGGER.log(Level.SEVERE,"Incorrect directory path");

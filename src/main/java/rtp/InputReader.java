@@ -124,6 +124,8 @@ public class InputReader {
             String className = RTPClassNames.ENTITIES_PATH + entityName;
             while((line = in.readLine()) != null) {
                 Constructor ctor = Class.forName(className).getConstructor(String.class, String.class);
+                //Strings can't contain commas because GTFS use it as file separator
+                line = line.replaceAll(",", "");
                 Object object = ctor.newInstance(line,header);
                 entitiesArray.add(object);
             }

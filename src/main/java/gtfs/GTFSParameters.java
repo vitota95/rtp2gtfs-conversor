@@ -6,6 +6,8 @@ import java.util.Map;
 
 /**
  * Created by Javipc on 16/07/2017.
+ * RTP map with the information needed to convert
+ * to GTFS.
  */
 public class GTFSParameters {
     private Map<String, RTPentity> RTPobjects;

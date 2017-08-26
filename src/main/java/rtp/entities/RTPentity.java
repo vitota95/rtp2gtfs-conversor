@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 /**
  * Created by javig on 03/07/2017.
+ * Abstract class representing an RTP entity
+ *
  */
 public abstract class RTPentity {
     private String valuesString;

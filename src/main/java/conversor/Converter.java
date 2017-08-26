@@ -1,4 +1,4 @@
-package main;
+package conversor;
 
 import gtfs.GTFSFilenames;
 import gtfs.GTFSParameters;

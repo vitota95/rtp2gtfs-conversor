@@ -28,13 +28,13 @@ public class Trips extends GTFSEntity {
                 case RTPClassNames.CLASS_EXPEDICIO:
                     Expedicio expedicio = (Expedicio) value;
                     if (expedicio.getRestriccio_id().isEmpty())
-                        tripValues.service_id = String.format("%d", Integer.parseInt(expedicio.getDia_atribut_id()));
+                        tripValues.service_id = expedicio.getDia_atribut_id();
                     else
                         tripValues.service_id = expedicio.getRestriccio_id();
                     tripValues.trip_id = expedicio.getExpedicio_id();
                     tripValues.route_id = expedicio.getLinia_id();
                     tripValues.direction_id = (expedicio.getDireccio_id().equals("1")) ? "0" : "1";
-                    // TODO set wheelchair accesible
+                    // TODO set wheelchair accessible
                     break;
                 default:
                     throw new IOException("Trips unknown parameter: " + key);
