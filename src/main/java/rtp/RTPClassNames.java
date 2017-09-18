@@ -20,6 +20,7 @@ public interface RTPClassNames {
     String CLASS_TIPUS_DIA = "TipusDia";
     String CLASS_DIA_ATRIBUT = "DiaAtribut";
     String CLASS_TIPUS_DIA_2_DIA_ATRIBUT = "TipusDia2DiaAtribut";
+    String CLASS_NOM_CURT = "NomCurt";
 
     /**
      * Created by javig on 07/07/2017.

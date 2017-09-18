@@ -29,7 +29,12 @@ public class Routes extends GTFSEntity {
                 routesValues.route_id = linia.getLinia_id();
                 routesValues.agency_id = linia.getOperador_id();
                 routesValues.route_short_name = linia.getLinia_nom_curt();
-                routesValues.route_long_name = linia.getLinia_desc();
+                if (linia.getLinia_desc() == null) {
+                    routesValues.route_long_name = linia.getLinia_nom_curt();
+                } else {
+                    routesValues.route_long_name = linia.getLinia_desc();
+                }
+
             } else {
                 throw new IOException("Routes unknown parameter: " + key);
             }

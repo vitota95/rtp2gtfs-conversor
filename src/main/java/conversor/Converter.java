@@ -68,6 +68,25 @@ class Converter {
      */
     boolean convert() throws IOException, IllegalAccessException, NoSuchMethodException, InstantiationException, InvocationTargetException, ParseException, ClassNotFoundException {
         if (checker.checkRTPMap()) {
+            if (checker.isNomCurtPresent()) {
+
+                ArrayList<Linia> l = RTPentitiesMap.get(RTPClassNames.CLASS_LINIA);
+                ArrayList<NomCurt> n = RTPentitiesMap.get(RTPClassNames.CLASS_NOM_CURT);
+
+                Linia[] linias = l.toArray(new Linia[l.size()]);
+                NomCurt[] nomCurts = n.toArray(new NomCurt[n.size()]);
+
+                for (NomCurt nom : nomCurts) {
+                    Optional<Linia> liniaOptional = Arrays.stream(linias)
+                            .filter(x -> x.getLinia_nom_curt().equalsIgnoreCase(nom.getLinia_nom_curt()))
+                            .findFirst();
+                    if (liniaOptional.isPresent()) {
+                        Linia linia = liniaOptional.get();
+                        linia.setLinia_desc(nom.getLinia_desc());
+                    }
+                }
+            }
+
             setGtfsFilesWithSimpleConversion(Agency.class, GTFSFilenames.CLASS_AGENCY,
                     RTPClassNames.CLASS_OPERADOR, GtfsCsvHeaders.CLASS_AGENCY_CSV);
             setGtfsFilesWithSimpleConversion(Routes.class, GTFSFilenames.CLASS_ROUTES,

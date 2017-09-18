@@ -19,8 +19,17 @@ public class Linia extends RTPentity {
         return linia_desc;
     }
 
+    public void setLinia_nom_curt(String linia_nom_curt) {
+        this.linia_nom_curt = linia_nom_curt;
+    }
+
+    public void setLinia_desc(String linia_desc) {
+        this.linia_desc = linia_desc;
+    }
+
     public Linia(String val, String h)  throws IOException{
         super(val, h);
+
         setValues(LOGGER);
     }
 

@@ -61,4 +61,8 @@ public class RTPChecker {
     public boolean isHoresDePasPresent() {
         return entityKeys.contains(RTPClassNames.CLASS_HORES_DE_PAS);
     }
+
+    public boolean isNomCurtPresent() {
+        return entityKeys.contains(RTPClassNames.CLASS_NOM_CURT);
+    }
 }

@@ -103,6 +103,9 @@ public class InputReader {
                     case FileNames.FILE_RTP_TIPUS_DIA_2_DIA_ATRIBUT:
                         this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_TIPUS_DIA_2_DIA_ATRIBUT);
                         break;
+                    case FileNames.FILE_NOM_CURT:
+                        this.setRTPEntity(zif.getInputStream(entry), RTPClassNames.CLASS_NOM_CURT);
+                        break;
                     default:
                         break;
                 }
