@@ -25,9 +25,20 @@ public class Main {
 
         if (args.length == 2){
             outputDirectory = args[1];
-            LOGGER.log(Level.FINE, "Correct number of arguments provided, needed {input.rtp} {outputDirectory}");
+            File file = new File(outputDirectory);
+            LOGGER.info("Correct number of arguments provided");
+
+            if (file.isFile())
+            {
+                LOGGER.info("Output directory correct");
+            }
+            else
+            {
+                LOGGER.log(Level.SEVERE, "You must provide a valid file name");
+                return;
+            }
         } else{
-            LOGGER.log(Level.SEVERE, "Wrong number of arguments");
+            LOGGER.log(Level.SEVERE, "Wrong number of arguments, needed {input.rtp} {outputDirectory}");
             return;
         }
 

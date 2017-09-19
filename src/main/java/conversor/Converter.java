@@ -82,7 +82,7 @@ class Converter {
                             .findFirst();
                     if (liniaOptional.isPresent()) {
                         Linia linia = liniaOptional.get();
-                        linia.setLinia_desc(nom.getLinia_desc());
+                        linia.setLinia_nom_curt(nom.getLinia_desc());
                     }
                 }
             }
